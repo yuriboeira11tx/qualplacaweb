@@ -101,7 +101,7 @@
 
             <div class="form-group">
                 <label for="clock">Clock:</label>
-                <input type="text" class="form-control" id="clock" placeholder="Ex: 30mghz">
+                <input type="text" class="form-control" id="clock" placeholder="Ex: 30mhz">
             </div>
 
             <div class="form-group">

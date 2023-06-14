@@ -32,9 +32,14 @@
             $email = $_POST['email'];
             $password = $_POST['password'];
             if ($email == '1@1' && $password == '1') {
-              // FAZER Autenticação no DB
-              header("Location: usuarios/home.php");
-              exit;
+              $tipoUsuario = 0; //Fazer Get da Base
+              if($tipoUsuario = 0){
+                header("Location: usuarios/usuarioComum/home.php");
+                exit;
+              }elseif($tipoUsuario = 1){
+                //header("Location: usuarios/UsuarioAdm/home.php");
+                exit;
+              }
             } else {
               echo "<BR>Login e/ou senha inválidos!";
             }

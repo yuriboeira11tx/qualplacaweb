@@ -38,17 +38,17 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link active" href="#">Favoritos</a>
+                    <a class="nav-link" href="home.php">Pagina Principal</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Placas Avaliadas</a>
+                    <a class="nav-link" href="placas_avaliadas.php">Placas Avaliadas</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Minhas Sugestões</a>
+                    <a class="nav-link" href="minhas_sugestoes.php">Minhas Sugestões</a>
                 </li>
             </ul>
         </div>
-    </nav>
+    </nav>  
 
     <div class="container">
         <h2>Favoritos</h2>

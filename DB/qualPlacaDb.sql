@@ -18,35 +18,6 @@ USE `qualplaca`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `avaliacao`
---
-
-DROP TABLE IF EXISTS `avaliacao`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `avaliacao` (
-  `Id` int NOT NULL AUTO_INCREMENT,
-  `Valor` int DEFAULT NULL,
-  `placa_Id` int NOT NULL,
-  `usuario_Id` int NOT NULL,
-  PRIMARY KEY (`Id`),
-  KEY `fk_avaliacao_placa1_idx` (`placa_Id`),
-  KEY `fk_avaliacao_usuario1_idx` (`usuario_Id`),
-  CONSTRAINT `fk_avaliacao_placa1` FOREIGN KEY (`placa_Id`) REFERENCES `placa` (`Id`),
-  CONSTRAINT `fk_avaliacao_usuario1` FOREIGN KEY (`usuario_Id`) REFERENCES `usuario` (`Id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `avaliacao`
---
-
-LOCK TABLES `avaliacao` WRITE;
-/*!40000 ALTER TABLE `avaliacao` DISABLE KEYS */;
-/*!40000 ALTER TABLE `avaliacao` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `fabricante`
 --
 
@@ -68,34 +39,6 @@ LOCK TABLES `fabricante` WRITE;
 /*!40000 ALTER TABLE `fabricante` DISABLE KEYS */;
 INSERT INTO `fabricante` VALUES (1,'Nvidia'),(2,'AMD'),(3,'Intel');
 /*!40000 ALTER TABLE `fabricante` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `favoritos`
---
-
-DROP TABLE IF EXISTS `favoritos`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `favoritos` (
-  `Id` int NOT NULL AUTO_INCREMENT,
-  `usuario_Id` int NOT NULL,
-  `placa_Id` int NOT NULL,
-  PRIMARY KEY (`Id`,`usuario_Id`,`placa_Id`),
-  KEY `fk_usuario_has_placa_placa1_idx` (`placa_Id`),
-  KEY `fk_usuario_has_placa_usuario1_idx` (`usuario_Id`),
-  CONSTRAINT `fk_usuario_has_placa_placa1` FOREIGN KEY (`placa_Id`) REFERENCES `placa` (`Id`),
-  CONSTRAINT `fk_usuario_has_placa_usuario1` FOREIGN KEY (`usuario_Id`) REFERENCES `usuario` (`Id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `favoritos`
---
-
-LOCK TABLES `favoritos` WRITE;
-/*!40000 ALTER TABLE `favoritos` DISABLE KEYS */;
-/*!40000 ALTER TABLE `favoritos` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -138,6 +81,7 @@ CREATE TABLE `placa` (
   `vram` varchar(45) DEFAULT NULL,
   `clock` varchar(45) DEFAULT NULL,
   `consumo` varchar(45) DEFAULT NULL,
+  `patsh` varchar(200) DEFAULT NULL,
   PRIMARY KEY (`Id`),
   KEY `fk_placa_marca1_idx` (`marca_Id`),
   KEY `fk_placa_fabricante1_idx` (`fabricante_Id`),
@@ -232,34 +176,6 @@ LOCK TABLES `utilidade` WRITE;
 INSERT INTO `utilidade` VALUES (1,'Streaming'),(2,'Computação de Alto Desempenho'),(3,'Mineração de Criptomoedas'),(4,'Edição de Vídeo e Design Gráfico'),(5,'Jogos');
 /*!40000 ALTER TABLE `utilidade` ENABLE KEYS */;
 UNLOCK TABLES;
-
---
--- Table structure for table `utilidadesplaca`
---
-
-DROP TABLE IF EXISTS `utilidadesplaca`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `utilidadesplaca` (
-  `Id` int NOT NULL AUTO_INCREMENT,
-  `placa_Id` int NOT NULL,
-  `utilidade_Id` int NOT NULL,
-  PRIMARY KEY (`Id`,`placa_Id`,`utilidade_Id`),
-  KEY `fk_placa_has_utilidade_utilidade1_idx` (`utilidade_Id`),
-  KEY `fk_placa_has_utilidade_placa1_idx` (`placa_Id`),
-  CONSTRAINT `fk_placa_has_utilidade_placa1` FOREIGN KEY (`placa_Id`) REFERENCES `placa` (`Id`),
-  CONSTRAINT `fk_placa_has_utilidade_utilidade1` FOREIGN KEY (`utilidade_Id`) REFERENCES `utilidade` (`Id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `utilidadesplaca`
---
-
-LOCK TABLES `utilidadesplaca` WRITE;
-/*!40000 ALTER TABLE `utilidadesplaca` DISABLE KEYS */;
-/*!40000 ALTER TABLE `utilidadesplaca` ENABLE KEYS */;
-UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -270,4 +186,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-06-13 21:56:46
+-- Dump completed on 2023-06-14 12:58:09

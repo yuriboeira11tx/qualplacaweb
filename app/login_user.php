@@ -32,12 +32,12 @@
             $email = $_POST['email'];
             $password = $_POST['password'];
             if ($email == '1@1' && $password == '1') {
-              $tipoUsuario = 0; //Fazer Get da Base
-              if($tipoUsuario = 0){
+              $tipoUsuario = 1; //Fazer Get da Base
+              if($tipoUsuario == 0){
                 header("Location: usuarios/usuarioComum/home.php");
                 exit;
-              }elseif($tipoUsuario = 1){
-                //header("Location: usuarios/UsuarioAdm/home.php");
+              }elseif($tipoUsuario == 1){
+                header("Location: usuarios/UsuarioAdm/home.php");
                 exit;
               }
             } else {
@@ -78,9 +78,6 @@
       </div>
     </div>
   </div>
-
-
-
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>

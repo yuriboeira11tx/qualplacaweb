@@ -14,7 +14,7 @@
 </head>
 <body>
   <div class="card" style="width: 400px;">
-    <img src="logo.png" class="card-img-top" alt="Imagem de login" style="width: 100px;height: 100px;">
+    <img src="img/logo.png" class="card-img-top" alt="Imagem de login" style="width: 100px;height: 100px;">
     <div class="card-body">
       <h5 class="card-title">Login</h5>
       <form method="post">

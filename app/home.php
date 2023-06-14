@@ -69,9 +69,15 @@
                 <label for="marca">Marca:</label>
                 <select class="form-control" id="marca">
                     <option value="">Selecione a marca</option>
-                    <option value="Nvidia">Nvidia</option>
-                    <option value="AMD">AMD</option>
-                    <option value="Intel">Intel</option>
+                    <option value="ASUS">ASUS</option>
+                    <option value="Gigabyte">Gigabyte</option>
+                    <option value="MSI">MSI</option>
+                    <option value="EVGA">EVGA</option>
+                    <option value="Zotac">Zotac</option>
+                    <option value="Palit">Palit</option>
+                    <option value="Sapphire">Sapphire</option>
+                    <option value="Galax">Galax</option>
+                    <option value="Palit">Palit</option>
                     <option value="Outra">Outra</option>
                 </select>
             </div>
@@ -83,13 +89,7 @@
                     <option value="Nvidia">Nvidia</option>
                     <option value="AMD">AMD</option>
                     <option value="Intel">Intel</option>
-                    <option value="Qualcomm">Qualcomm</option>
-                    <option value="Samsung">Samsung</option>
-                    <option value="Apple">Apple</option>
-                    <option value="IBM">IBM</option>
-                    <option value="Huawei">Huawei</option>
-                    <option value="ARM">ARM</option>
-                    <option value="Raspberry Pi">Raspberry Pi</option>
+                    <option value="Outro">Outra</option>   
                 </select>
             </div>
 

@@ -1,0 +1,4 @@
+Basicamente falta fazer a parte da comunicação com o banco de dados e tambem a parte da interface do usuário administrador, bem como as suas atividades.
+
+
+Ambas as questões estão sendo atualizadas no diretório do Github conforme o link https://github.com/yuriboeira11tx/qualplacaweb

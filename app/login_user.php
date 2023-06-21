@@ -5,6 +5,7 @@ require_once 'conexao_database.php';
 ?>
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>Login</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
@@ -17,6 +18,7 @@ require_once 'conexao_database.php';
     }
   </style>
 </head>
+
 <body>
   <div class="card" style="width: 400px;">
     <img src="img/logo.png" class="card-img-top" alt="Imagem de login" style="width: 100px;height: 100px;">
@@ -31,30 +33,34 @@ require_once 'conexao_database.php';
           <label for="password">Senha</label>
           <input type="password" class="form-control" name="password" id="password" placeholder="Digite sua senha">
         </div>
-        <button type="submit" name= "btnLogin" class="btn btn-primary">Login</button>
+        <button type="submit" name="btnLogin" class="btn btn-primary">Login</button>
         <?php
-          if (isset($_POST['btnLogin']) && ($_POST['email']) && ($_POST['password'])) {
-            $email = $_POST['email'];
-            $password = $_POST['password'];
-            
-            // Consulta para verificar se o usuário existe
-            $sql = "SELECT * FROM usuario WHERE email = '$email' AND senha = '$password'";
-            $result = mysqli_query($conn, $sql);
+        if (isset($_POST['btnLogin']) && ($_POST['email']) && ($_POST['password'])) {
+          $email = $_POST['email'];
+          $password = $_POST['password'];
 
-            if ($result && mysqli_num_rows($result) > 0) {
-                // Usuário encontrado, login bem-sucedido
-                // Redirecionar para a página principal ou realizar outras ações necessárias
-                /*
-                header('Location: index.php');
-                exit();
-                */
-                echo "<br>Usuário logado";
+          // Consulta para verificar se o usuário existe
+          $sql = "SELECT * FROM usuario WHERE email = '$email' AND senha = '$password'";
+          $result = mysqli_query($conn, $sql);
+
+          if ($result && mysqli_num_rows($result) > 0) {
+            // Usuário encontrado, login bem-sucedido
+            $usuario = mysqli_fetch_assoc($result);
+
+            // Redirecionar com base no tipo de usuário
+            if ($usuario['tipo'] == '0') {
+              header('Location: usuarios/usuarioAdm/home.php');
+              exit();
             } else {
-                // Usuário não encontrado ou senha incorreta
-                // Exibir uma mensagem de erro ou realizar outras ações necessárias
-                echo '<br>Usuário não encontrado ou senha incorreta';
+              header('Location: usuarios/usuarioComum/home.php');
+              exit();
             }
+          } else {
+            // Usuário não encontrado ou senha incorreta
+            // Exibir uma mensagem de erro ou realizar outras ações necessárias
+            echo '<br>Usuário não encontrado ou senha incorreta';
           }
+        }
         ?>
       </form>
     </div>
@@ -83,7 +89,7 @@ require_once 'conexao_database.php';
               <label for="signup-password">Senha</label>
               <input type="password" class="form-control" id="signup-password" placeholder="Digite sua senha">
             </div>
-            <button type="submit" name= "btnCadastro" class="btn btn-primary">Cadastrar</button>
+            <button type="submit" name="btnCadastro" class="btn btn-primary">Cadastrar</button>
           </form>
         </div>
       </div>
@@ -93,4 +99,5 @@ require_once 'conexao_database.php';
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
+
 </html>

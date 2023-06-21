@@ -1,3 +1,8 @@
+<?php
+// Incluir o arquivo de conexão com o banco de dados
+require_once 'conexao_database.php';
+
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -28,20 +33,26 @@
         </div>
         <button type="submit" name= "btnLogin" class="btn btn-primary">Login</button>
         <?php
-          if (isset($_POST['btnLogin'])&&($_POST['email'])&&($_POST['password'])) {
+          if (isset($_POST['btnLogin']) && ($_POST['email']) && ($_POST['password'])) {
             $email = $_POST['email'];
             $password = $_POST['password'];
-            if ($email == '1@1' && $password == '1') {
-              $tipoUsuario = 1; //Fazer Get da Base
-              if($tipoUsuario == 0){
-                header("Location: usuarios/usuarioComum/home.php");
-                exit;
-              }elseif($tipoUsuario == 1){
-                header("Location: usuarios/UsuarioAdm/home.php");
-                exit;
-              }
+            
+            // Consulta para verificar se o usuário existe
+            $sql = "SELECT * FROM usuario WHERE email = '$email' AND senha = '$password'";
+            $result = mysqli_query($conn, $sql);
+
+            if ($result && mysqli_num_rows($result) > 0) {
+                // Usuário encontrado, login bem-sucedido
+                // Redirecionar para a página principal ou realizar outras ações necessárias
+                /*
+                header('Location: index.php');
+                exit();
+                */
+                echo "<br>Usuário logado";
             } else {
-              echo "<BR>Login e/ou senha inválidos!";
+                // Usuário não encontrado ou senha incorreta
+                // Exibir uma mensagem de erro ou realizar outras ações necessárias
+                echo '<br>Usuário não encontrado ou senha incorreta';
             }
           }
         ?>

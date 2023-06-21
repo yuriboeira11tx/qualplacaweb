@@ -1,15 +1,15 @@
-CREATE DATABASE  IF NOT EXISTS `qualplaca` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+CREATE DATABASE  IF NOT EXISTS `qualplaca` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci */;
 USE `qualplaca`;
--- MySQL dump 10.13  Distrib 8.0.33, for Win64 (x86_64)
+-- MariaDB dump 10.19  Distrib 10.4.28-MariaDB, for Win64 (AMD64)
 --
--- Host: localhost    Database: qualplaca
+-- Host: 127.0.0.1    Database: qualplaca
 -- ------------------------------------------------------
--- Server version	8.0.33
+-- Server version	10.4.28-MariaDB
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!50503 SET NAMES utf8 */;
+/*!40101 SET NAMES utf8 */;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
@@ -23,12 +23,12 @@ USE `qualplaca`;
 
 DROP TABLE IF EXISTS `fabricante`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `fabricante` (
-  `Id` int NOT NULL AUTO_INCREMENT,
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
   `nome` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -47,12 +47,12 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `marca`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `marca` (
-  `Id` int NOT NULL AUTO_INCREMENT,
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
   `nome` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -71,13 +71,13 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `placa`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `placa` (
-  `Id` int NOT NULL AUTO_INCREMENT,
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
   `nome` varchar(100) DEFAULT NULL,
-  `marca_Id` int NOT NULL,
+  `marca_Id` int(11) NOT NULL,
   `preco` varchar(45) DEFAULT NULL,
-  `fabricante_Id` int NOT NULL,
+  `fabricante_Id` int(11) NOT NULL,
   `vram` varchar(45) DEFAULT NULL,
   `clock` varchar(45) DEFAULT NULL,
   `consumo` varchar(45) DEFAULT NULL,
@@ -87,7 +87,7 @@ CREATE TABLE `placa` (
   KEY `fk_placa_fabricante1_idx` (`fabricante_Id`),
   CONSTRAINT `fk_placa_fabricante1` FOREIGN KEY (`fabricante_Id`) REFERENCES `fabricante` (`Id`),
   CONSTRAINT `fk_placa_marca1` FOREIGN KEY (`marca_Id`) REFERENCES `marca` (`Id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -105,17 +105,17 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `sugestao`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `sugestao` (
-  `Id` int NOT NULL AUTO_INCREMENT,
-  `IdPlaca` int DEFAULT NULL,
-  `Texto` text,
-  `usuario_Id` int NOT NULL,
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `IdPlaca` int(11) DEFAULT NULL,
+  `Texto` text DEFAULT NULL,
+  `usuario_Id` int(11) NOT NULL,
   `situacao` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`Id`),
   KEY `fk_sugestao_usuario1_idx` (`usuario_Id`),
   CONSTRAINT `fk_sugestao_usuario1` FOREIGN KEY (`usuario_Id`) REFERENCES `usuario` (`Id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -133,15 +133,15 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `usuario`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `usuario` (
-  `Id` int NOT NULL AUTO_INCREMENT,
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
   `nome` varchar(60) DEFAULT NULL,
   `email` varchar(60) DEFAULT NULL,
   `senha` varchar(45) DEFAULT NULL,
   `tipo` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`Id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -150,6 +150,7 @@ CREATE TABLE `usuario` (
 
 LOCK TABLES `usuario` WRITE;
 /*!40000 ALTER TABLE `usuario` DISABLE KEYS */;
+INSERT INTO `usuario` VALUES (1,'yuri','yuri@gmail.com','123','0');
 /*!40000 ALTER TABLE `usuario` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -159,12 +160,12 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `utilidade`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `utilidade` (
-  `Id` int NOT NULL AUTO_INCREMENT,
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
   `nome` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -186,4 +187,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-06-21 19:38:29
+-- Dump completed on 2023-06-21 20:00:06

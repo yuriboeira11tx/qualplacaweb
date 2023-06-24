@@ -2,7 +2,21 @@
 // Incluir o arquivo de conexão com o banco de dados
 require_once 'conexao_database.php';
 
+if (isset($_COOKIE['usuario_logado'])) {
+  $nomeUsuario = explode(",", $_COOKIE['usuario_logado'])[0];
+  $tipoUsuario = explode(",", $_COOKIE['usuario_logado'])[1];
+
+  // Redirecionar com base no tipo de usuário
+  if ($tipoUsuario == '0') {
+    header('Location: usuarios/usuarioAdm/home.php');
+    exit();
+  }
+
+  header('Location: usuarios/usuarioComum/home.php');
+  exit();
+}
 ?>
+
 <!DOCTYPE html>
 <html>
 
@@ -49,16 +63,24 @@ require_once 'conexao_database.php';
 
             // Redirecionar com base no tipo de usuário
             if ($usuario['tipo'] == '0') {
+              // Definir o cookie com o nome do usuário e tipo do usuário
+              $nomeUsuario = $usuario['nome'];
+              $tempoExpiracao = time() + 3600;
+              setcookie('usuario_logado', "$nomeUsuario,0", $tempoExpiracao);
               header('Location: usuarios/usuarioAdm/home.php');
               exit();
             } else {
+              // Definir o cookie com o nome do usuário e tipo do usuário
+              $nomeUsuario = $usuario['nome'];
+              $tempoExpiracao = time() + 3600;
+              setcookie('usuario_logado', "$nomeUsuario,1", $tempoExpiracao);
               header('Location: usuarios/usuarioComum/home.php');
               exit();
             }
           } else {
             // Usuário não encontrado ou senha incorreta
             // Exibir uma mensagem de erro ou realizar outras ações necessárias
-            echo '<br>Usuário não encontrado ou senha incorreta';
+            echo '<br><p style="color: red;">Usuário não existe ou a credencial está inválida</p>';
           }
         }
         ?>

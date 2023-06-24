@@ -1,5 +1,4 @@
 <?php
-// Incluir o arquivo de conexão com o banco de dados
 require_once 'conexao_database.php';
 
 if (isset($_COOKIE['usuario_logado'])) {

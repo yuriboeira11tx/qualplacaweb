@@ -1,3 +1,19 @@
+<?php
+if (isset($_COOKIE['usuario_logado'])) {
+    $nomeUsuario = explode(",", $_COOKIE['usuario_logado'])[0];
+    $tipoUsuario = explode(",", $_COOKIE['usuario_logado'])[1];
+
+    // Redirecionar com base no tipo de usuário
+    if ($tipoUsuario == '0') {
+        header('Location: usuarios/usuarioAdm/home.php');
+        exit();
+    }
+} else {
+    header("Location: deslogado.php");
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html>
 

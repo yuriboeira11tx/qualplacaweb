@@ -1,19 +1,17 @@
 <?php
-require_once 'conexao_database.php';
+    require_once 'C:\xampp\htdocs\qualplacaweb\app\conexao_database.php';
 
-if (isset($_COOKIE['usuario_logado'])) {
-    $nomeUsuario = explode(",", $_COOKIE['usuario_logado'])[0];
-    $tipoUsuario = explode(",", $_COOKIE['usuario_logado'])[1];
-
-    // Redirecionar com base no tipo de usuário
-    if ($tipoUsuario != '0') {
-        header('Location: usuarios/usuarioComum/home.php');
+    if (isset($_COOKIE['usuario_logado'])) {
+        $nomeUsuario = explode(",", $_COOKIE['usuario_logado'])[0];
+        $tipoUsuario = explode(",", $_COOKIE['usuario_logado'])[1];
+        if ($tipoUsuario != '0') {
+            header('Location: usuarios/usuarioComum/home.php');
+            exit();
+        }
+    }else{
+        header("Location: usuarios/deslogado.php");
         exit();
     }
-} else {
-    header("Location: deslogado.php");
-    exit();
-}
 ?>
 
 <!DOCTYPE html>
@@ -77,22 +75,22 @@ if (isset($_COOKIE['usuario_logado'])) {
                         <button type="submit" name="btnCadastro" class="btn btn-primary">Cadastrar</button>
                     </form>
                     <?php
-                    if (isset($_POST['btnCadastro']) && ($_POST['nome']) && ($_POST['email']) && ($_POST['senha'])) {
-                        $nome = $_POST['nome'];
-                        $email = $_POST['email'];
-                        $senha = $_POST['senha'];
+                        if (isset($_POST['btnCadastro']) && ($_POST['nome']) && ($_POST['email']) && ($_POST['senha'])) {
+                            $nome = $_POST['nome'];
+                            $email = $_POST['email'];
+                            $senha = $_POST['senha'];
 
-                        // Executa a query de inserção
-                        $query = "INSERT INTO usuario (nome, email, senha, tipo) VALUES ('$nome', '$email', '$senha', '0')";
-                        $resultado = mysqli_query($conn, $query);
+                            // Executa a query de inserção
+                            $query = "INSERT INTO usuario (nome, email, senha, tipo) VALUES ('$nome', '$email', '$senha', '0')";
+                            $resultado = mysqli_query($conn, $query);
 
-                        // Verifica se o cadastro foi realizado com sucesso
-                        if ($resultado) {
-                            echo '<script>alert("Usuário cadastrado com sucesso!");</script>';
-                        } else {
-                            echo '<script>alert("Erro ao cadastrar '. mysqli_error($conn) . ' ")' . ';</script>';
+                            // Verifica se o cadastro foi realizado com sucesso
+                            if ($resultado) {
+                                echo '<script>alert("Usuário cadastrado com sucesso!");</script>';
+                            } else {
+                                echo '<script>alert("Erro ao cadastrar '. mysqli_error($conn) . ' ")' . ';</script>';
+                            }
                         }
-                    }
                     ?>
                 </div>
             </div>

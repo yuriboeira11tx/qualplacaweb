@@ -9,7 +9,7 @@ if (isset($_COOKIE['usuario_logado'])) {
         exit();
     }
 } else {
-    header("Location: deslogado.php");
+    header("Location: usuarios/deslogado.php");
     exit();
 }
 ?>

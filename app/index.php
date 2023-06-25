@@ -1,19 +1,18 @@
 <?php
-require_once 'conexao_database.php';
+  require_once 'conexao_database.php';
 
-if (isset($_COOKIE['usuario_logado'])) {
-  $nomeUsuario = explode(",", $_COOKIE['usuario_logado'])[0];
-  $tipoUsuario = explode(",", $_COOKIE['usuario_logado'])[1];
-
-  // Redirecionar com base no tipo de usuário
-  if ($tipoUsuario == '0') {
-    header('Location: usuarios/usuarioAdm/home.php');
+  if (isset($_COOKIE['usuario_logado'])) {
+    $nomeUsuario = explode(",", $_COOKIE['usuario_logado'])[0];
+    $tipoUsuario = explode(",", $_COOKIE['usuario_logado'])[1];
+    
+    // Redirecionar com base no tipo de usuário
+    if ($tipoUsuario == '0') {
+      header('Location: usuarios/usuarioAdm/home.php');
+      exit();
+    }
+    header('Location: usuarios/usuarioComum/home.php');
     exit();
   }
-
-  header('Location: usuarios/usuarioComum/home.php');
-  exit();
-}
 ?>
 
 <!DOCTYPE html>
@@ -68,7 +67,7 @@ if (isset($_COOKIE['usuario_logado'])) {
               setcookie('usuario_logado', "$nomeUsuario,0", $tempoExpiracao);
               header('Location: usuarios/usuarioAdm/home.php');
               exit();
-            } else {
+            } else{
               // Definir o cookie com o nome do usuário e tipo do usuário
               $nomeUsuario = $usuario['nome'];
               $tempoExpiracao = time() + 3600;
@@ -97,21 +96,42 @@ if (isset($_COOKIE['usuario_logado'])) {
           <button type="button" class="close" data-dismiss="modal">&times;</button>
         </div>
         <div class="modal-body">
-          <form>
+          <form method="post">
             <div class="form-group">
               <label for="signup-name">Nome</label>
-              <input type="text" class="form-control" id="signup-name" placeholder="Digite seu nome">
+              <input type="text" class="form-control" id="signup-name" name="nome" placeholder="Digite seu nome">
             </div>
             <div class="form-group">
               <label for="signup-email">E-mail</label>
-              <input type="email" class="form-control" id="signup-email" placeholder="Digite seu e-mail">
+              <input type="email" class="form-control" id="signup-email" name="email" placeholder="Digite seu e-mail">
             </div>
             <div class="form-group">
               <label for="signup-password">Senha</label>
-              <input type="password" class="form-control" id="signup-password" placeholder="Digite sua senha">
+              <input type="password" class="form-control" id="signup-password" name="senha" placeholder="Digite sua senha">
             </div>
             <button type="submit" name="btnCadastro" class="btn btn-primary">Cadastrar</button>
           </form>
+          <?php
+              if (isset($_POST['btnCadastro']) && ($_POST['nome']) && ($_POST['email']) && ($_POST['senha'])) {
+                $nome = $_POST['nome'];
+                $email = $_POST['email'];
+                $senha = $_POST['senha'];
+
+                // Executa a query de inserção
+                $query = "INSERT INTO usuario (nome, email, senha, tipo) VALUES ('$nome', '$email', '$senha', '0')";
+                $resultado = mysqli_query($conn, $query);
+
+                // Verifica se o cadastro foi realizado com sucesso
+                if ($resultado) {
+                    echo '<script>alert("Usuário cadastrado com sucesso!");</script>';
+                    setcookie('usuario_logado', "$signupNome,1", $tempoExpiracao);
+                    header('Location: usuarios/usuarioComum/home.php');    
+                    exit();
+                  } else {
+                    echo '<script>alert("Erro ao cadastrar '. mysqli_error($conn) . ' ")' . ';</script>';
+                }
+            }
+            ?>
         </div>
       </div>
     </div>

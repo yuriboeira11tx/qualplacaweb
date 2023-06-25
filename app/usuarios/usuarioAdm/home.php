@@ -21,11 +21,72 @@
     <title>HomeAdm</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <style>
-        body {
+        .container {
             display: flex;
-            min-height: 100vh;
-            align-items: center;
+            flex-wrap: wrap;
             justify-content: center;
+            gap: 20px;
+            padding-top: 70px;
+        }
+
+        .placa-card {
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            overflow: hidden;
+            width: 600px;
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .placa-card:first-child {
+            margin-top: 20px;
+        }
+
+        .placa-image {
+            width: 200px;
+            height: 200px;
+            overflow: hidden;
+        }
+
+        .placa-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .placa-info {
+            flex: 1;
+            padding: 20px;
+        }
+
+        .placa-info h3 {
+            margin-bottom: 10px;
+        }
+
+        .placa-info p {
+            margin-bottom: 5px;
+        }
+
+        .placa-info .campo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .placa-info .campo label {
+            flex: 0 0 120px;
+            font-weight: bold;
+        }
+
+        .placa-info .campo span {
+            flex: 1;
+        }
+
+        .placa-info .campo-utilidade {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
         }
     </style>
 </head>
@@ -50,6 +111,84 @@
             </ul>
         </div>
     </nav>
+    <div class="container">
+        <form>
+            <?php
+            //$sql =  "SELECT P.preco, (select M.nome FROM marca M WHERE M.Id = P.marca_Id), (select F.nome FROM fabricante F WHERE F.Id = P.fabricante_Id), P.vram, P.clock, (select U.nome FROM utilidade U WHERE U.Id = P.utilidade_Id), P.consumo, P.qtdEstrelas FROM placa P WHERE P.preco < '$precoMaximo' AND P.marca_Id = '$marca' AND P.fabricante_Id = '$fabricante' AND P.vram = '$memoria' AND P.clock = '$clock' AND P.utilidade_Id = '$utilidades' AND P.consumo = '$consumo' AND P.qtdEstrelas = '$estrelas';
+            // $sql = "SELECT * FROM placa P WHERE P.qtdEstrelas > 5";
+            $sql = "SELECT * FROM placa P;";
+            $results = mysqli_query($conn, $sql);
+
+            if (mysqli_num_rows($results) > 0) {
+                while ($result = mysqli_fetch_assoc($results)) :
+            ?>
+            <div class="placa-card">
+                <div class="placa-image">
+                    <img src="<?= $result['path'] ?>">
+                </div>
+                <div class="placa-info">
+                    <h3><?= $result['nome'] ?></h3>
+                    <div class="campo">
+                        <label>Marca:</label>
+                        <span><?= $result['marca_Id'] ?></span>
+                    </div>
+                    <div class="campo">
+                        <label>Fabricante:</label>
+                        <span><?= $result['fabricante_Id'] ?></span>
+                    </div>
+                    <div class="campo">
+                        <label>Memória:</label>
+                        <span><?= $result['vram'] ?></span>
+                    </div>
+                    <div class="campo">
+                        <label>Clock:</label>
+                        <span><?= $result['clock'] ?></span>
+                    </div>
+                    <div class="campo campo-utilidade">
+                        <label>Utilidade(s):</label>
+                        <span><?= $result['utilidade_Id'] ?></span>
+                    </div>
+                    <div class="campo">
+                        <label>Consumo:</label>
+                        <span><?= $result['consumo'] ?></span>
+                    </div>
+                    <div class="campo">
+                        <label>Avaliação:</label>
+                        <span><?= $result['qtdEstrelas'] ?></span>
+                    </div>
+                    <div class="campo">
+                        <label>Preço:</label>
+                        <span><?= $result['preco'] ?></span>
+                        </div>
+                    </div>
+                </div>
+            <?php
+                endwhile;
+            } else {
+                echo '<p class="text-center">Nenhuma placa de vídeo corresponde aos critérios de filtragem.</p>';
+            }
+            ?>
+        </form>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script>
+        // Adicionar manipulador de eventos para atualizar as estrelas selecionadas
+        const ratingInputs = document.querySelectorAll('.rating input[type="radio"]');
+        ratingInputs.forEach((input) => {
+            input.addEventListener('change', updateRating);
+        });
+
+        // Função para atualizar as estrelas selecionadas
+        function updateRating() {
+            const selectedRating = this.value;
+            console.log(`Avaliação: ${selectedRating}`);
+        }
+    </script>
+</body>
+
+</html>
 
     <div id="modal-signup" class="modal fade">
         <div class="modal-dialog">

@@ -126,7 +126,8 @@
             $consumo = isset($busca[6]) ? $busca[6] : '';
             $estrelas = isset($busca[7]) ? $busca[7] : '';
 
-            //$sql = "SELECT * FROM placa P WHERE P.preco < '$precoMaximo' AND P.marca_Id = '$marca' AND P.fabricante_Id = '$fabricante' AND P.vram = '$memoria' AND P.clock = '$clock' AND P.utilidade_Id = '$utilidades' AND P.consumo = '$consumo' AND P.qtdEstrelas = '$estrelas'";
+            //$sql =  "SELECT P.preco, (select M.nome FROM marca M WHERE M.Id = P.marca_Id), (select F.nome FROM fabricante F WHERE F.Id = P.fabricante_Id), P.vram, P.clock, (select U.nome FROM utilidade U WHERE U.Id = P.utilidade_Id), P.consumo, P.qtdEstrelas FROM placa P WHERE P.preco < '$precoMaximo' AND P.marca_Id = '$marca' AND P.fabricante_Id = '$fabricante' AND P.vram = '$memoria' AND P.clock = '$clock' AND P.utilidade_Id = '$utilidades' AND P.consumo = '$consumo' AND P.qtdEstrelas = '$estrelas';
+
             $sql = "SELECT * FROM placa P";
             $results = mysqli_query($conn, $sql);
 
@@ -135,14 +136,10 @@
             ?>
             <div class="placa-card">
                 <div class="placa-image">
-                    <img src="<?= $result['path'] ?>" alt="<?= $result['nome'] ?>">
+                    <img src="<?= $result['path'] ?>">
                 </div>
                 <div class="placa-info">
                     <h3><?= $result['nome'] ?></h3>
-                    <div class="campo">
-                        <label>Modelo:</label>
-                        <span><?= $result['nome'] ?></span>
-                    </div>
                     <div class="campo">
                         <label>Marca:</label>
                         <span><?= $result['marca_Id'] ?></span>

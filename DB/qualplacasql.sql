@@ -1,15 +1,15 @@
-CREATE DATABASE  IF NOT EXISTS `qualplaca` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci */;
+CREATE DATABASE  IF NOT EXISTS `qualplaca` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
 USE `qualplaca`;
--- MariaDB dump 10.19  Distrib 10.4.28-MariaDB, for Win64 (AMD64)
+-- MySQL dump 10.13  Distrib 8.0.33, for Win64 (x86_64)
 --
--- Host: 127.0.0.1    Database: qualplaca
+-- Host: localhost    Database: qualplaca
 -- ------------------------------------------------------
--- Server version	10.4.28-MariaDB
+-- Server version	8.0.33
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+/*!50503 SET NAMES utf8 */;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
@@ -18,17 +18,46 @@ USE `qualplaca`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `avaliacao`
+--
+
+DROP TABLE IF EXISTS `avaliacao`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `avaliacao` (
+  `Id` int NOT NULL AUTO_INCREMENT,
+  `Valor` int DEFAULT NULL,
+  `placa_Id` int NOT NULL,
+  `usuario_Id` int NOT NULL,
+  PRIMARY KEY (`Id`),
+  KEY `fk_avaliacao_placa1_idx` (`placa_Id`),
+  KEY `fk_avaliacao_usuario1_idx` (`usuario_Id`),
+  CONSTRAINT `fk_avaliacao_placa1` FOREIGN KEY (`placa_Id`) REFERENCES `placa` (`Id`),
+  CONSTRAINT `fk_avaliacao_usuario1` FOREIGN KEY (`usuario_Id`) REFERENCES `usuario` (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `avaliacao`
+--
+
+LOCK TABLES `avaliacao` WRITE;
+/*!40000 ALTER TABLE `avaliacao` DISABLE KEYS */;
+/*!40000 ALTER TABLE `avaliacao` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `fabricante`
 --
 
 DROP TABLE IF EXISTS `fabricante`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `fabricante` (
-  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `Id` int NOT NULL AUTO_INCREMENT,
   `nome` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -42,17 +71,45 @@ INSERT INTO `fabricante` VALUES (1,'Nvidia'),(2,'AMD'),(3,'Intel');
 UNLOCK TABLES;
 
 --
+-- Table structure for table `favoritos`
+--
+
+DROP TABLE IF EXISTS `favoritos`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `favoritos` (
+  `Id` int NOT NULL AUTO_INCREMENT,
+  `usuario_Id` int NOT NULL,
+  `placa_Id` int NOT NULL,
+  PRIMARY KEY (`Id`,`usuario_Id`,`placa_Id`),
+  KEY `fk_usuario_has_placa_placa1_idx` (`placa_Id`),
+  KEY `fk_usuario_has_placa_usuario1_idx` (`usuario_Id`),
+  CONSTRAINT `fk_usuario_has_placa_placa1` FOREIGN KEY (`placa_Id`) REFERENCES `placa` (`Id`),
+  CONSTRAINT `fk_usuario_has_placa_usuario1` FOREIGN KEY (`usuario_Id`) REFERENCES `usuario` (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `favoritos`
+--
+
+LOCK TABLES `favoritos` WRITE;
+/*!40000 ALTER TABLE `favoritos` DISABLE KEYS */;
+/*!40000 ALTER TABLE `favoritos` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `marca`
 --
 
 DROP TABLE IF EXISTS `marca`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `marca` (
-  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `Id` int NOT NULL AUTO_INCREMENT,
   `nome` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -71,23 +128,27 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `placa`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `placa` (
-  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `Id` int NOT NULL AUTO_INCREMENT,
   `nome` varchar(100) DEFAULT NULL,
-  `marca_Id` int(11) NOT NULL,
+  `marca_Id` int NOT NULL,
   `preco` varchar(45) DEFAULT NULL,
-  `fabricante_Id` int(11) NOT NULL,
+  `fabricante_Id` int NOT NULL,
+  `utilidade_Id` int NOT NULL,
   `vram` varchar(45) DEFAULT NULL,
   `clock` varchar(45) DEFAULT NULL,
   `consumo` varchar(45) DEFAULT NULL,
-  `patsh` varchar(200) DEFAULT NULL,
+  `path` varchar(200) DEFAULT NULL,
+  `qtdEstrelas` int DEFAULT NULL,
   PRIMARY KEY (`Id`),
   KEY `fk_placa_marca1_idx` (`marca_Id`),
   KEY `fk_placa_fabricante1_idx` (`fabricante_Id`),
+  KEY `fk_placa_utilidade1_idx` (`utilidade_Id`),
   CONSTRAINT `fk_placa_fabricante1` FOREIGN KEY (`fabricante_Id`) REFERENCES `fabricante` (`Id`),
-  CONSTRAINT `fk_placa_marca1` FOREIGN KEY (`marca_Id`) REFERENCES `marca` (`Id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+  CONSTRAINT `fk_placa_marca1` FOREIGN KEY (`marca_Id`) REFERENCES `marca` (`Id`),
+  CONSTRAINT `fk_placa_utilidade1` FOREIGN KEY (`utilidade_Id`) REFERENCES `utilidade` (`Id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -96,6 +157,7 @@ CREATE TABLE `placa` (
 
 LOCK TABLES `placa` WRITE;
 /*!40000 ALTER TABLE `placa` DISABLE KEYS */;
+INSERT INTO `placa` VALUES (1,'11111111111111111111111111111111111111',1,'111',1,1,'1111111111','1111111111','11111111','\"C: xampp\\htdocs\\qualplacaweb\\app\\img\\logo.png\"',1),(3,'22',2,'2',2,2,'2','2','22','Foto minha.jpg',NULL);
 /*!40000 ALTER TABLE `placa` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -105,17 +167,17 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `sugestao`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `sugestao` (
-  `Id` int(11) NOT NULL AUTO_INCREMENT,
-  `IdPlaca` int(11) DEFAULT NULL,
-  `Texto` text DEFAULT NULL,
-  `usuario_Id` int(11) NOT NULL,
+  `Id` int NOT NULL AUTO_INCREMENT,
+  `IdPlaca` int DEFAULT NULL,
+  `Texto` text,
+  `usuario_Id` int NOT NULL,
   `situacao` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`Id`),
   KEY `fk_sugestao_usuario1_idx` (`usuario_Id`),
   CONSTRAINT `fk_sugestao_usuario1` FOREIGN KEY (`usuario_Id`) REFERENCES `usuario` (`Id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -133,15 +195,15 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `usuario`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `usuario` (
-  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `Id` int NOT NULL AUTO_INCREMENT,
   `nome` varchar(60) DEFAULT NULL,
   `email` varchar(60) DEFAULT NULL,
   `senha` varchar(45) DEFAULT NULL,
   `tipo` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -150,7 +212,7 @@ CREATE TABLE `usuario` (
 
 LOCK TABLES `usuario` WRITE;
 /*!40000 ALTER TABLE `usuario` DISABLE KEYS */;
-INSERT INTO `usuario` VALUES (1,'yuri','yuri@gmail.com','123','0');
+INSERT INTO `usuario` VALUES (1,'Cristian Augusto Simon','cristiansk152001@gmail.com','123','0'),(2,'Cristian Augusto Simon','cristian-ask@hotmail.com','123','1');
 /*!40000 ALTER TABLE `usuario` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -160,12 +222,12 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `utilidade`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `utilidade` (
-  `Id` int(11) NOT NULL AUTO_INCREMENT,
-  `nome` varchar(255) DEFAULT NULL,
+  `Id` int NOT NULL AUTO_INCREMENT,
+  `nome` varchar(400) DEFAULT NULL,
   PRIMARY KEY (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -174,7 +236,7 @@ CREATE TABLE `utilidade` (
 
 LOCK TABLES `utilidade` WRITE;
 /*!40000 ALTER TABLE `utilidade` DISABLE KEYS */;
-INSERT INTO `utilidade` VALUES (1,'Streaming'),(2,'Computação de Alto Desempenho'),(3,'Mineração de Criptomoedas'),(4,'Edição de Vídeo e Design Gráfico'),(5,'Jogos');
+INSERT INTO `utilidade` VALUES (1,'Streaming'),(2,'Computação de Alto Desempenho'),(3,'Streaming e Computação de Alto Desempenho'),(4,'Mineração de Criptomoedas'),(5,'Streaming e Mineração de Criptomoedas'),(6,'Computação de Alto Desempenho e Mineração de Criptomoedas'),(7,'Streaming, Computação de Alto Desempenho e Mineração de Criptomoedas'),(8,'Edição de Vídeos'),(9,'Edição de Vídeos e Streaming'),(10,'Edição de Vídeos e Computação de Alto Desempenho'),(11,'Edição de Vídeos, Streaming e Computação de Alto Desempenho'),(12,'Edição de Vídeos e Mineração de Criptomoedas'),(13,'Edição de Vídeos, Mineração de Criptomoedas e Streaming'),(14,'Edição de Vídeos, Mineração de Criptomoedas e Computação de Alto Desempenho'),(15,'Edição de Vídeos, Mineração de Criptomoedas, Streaming e Computação de Alto Desempenho'),(16,'Jogos'),(17,'Jogos e Streaming'),(18,'Jogos e Computação de Alto Desempenho'),(19,'Jogos,  Streaming e Computação de Alto Desempenho'),(20,'Jogos e Mineração de Criptomoedas'),(21,'Jogos, Streaming e Mineração de Criptomoedas'),(22,'Jogos, Computação de Alto Desempenho e Mineração de Criptomoedas'),(23,'Jogos, Computação de Alto Desempenho, Streaming e Mineração de Criptomoedas'),(24,'Jogos e Edição de Vídeos'),(25,'Jogos, Streaming e Edição de Vídeos'),(26,'Jogos, Computação de Alto Desempenho e Edição de Vídeos'),(27,'Jogos, Streaming, Computação de Alto Desempenho e Edição de Vídeos'),(28,'Jogos, Mineração de Criptomoedas e Edição de Vídeos'),(29,'Jogos, Mineração de Criptomoedas, Streaming e Edição de Vídeos'),(30,'Jogos, Mineração de Criptomoedas, Computação de Alto Desempenho e Edição de Vídeos'),(31,'Jogos, Mineração de Criptomoedas, Computação de Alto Desempenho, Streaming e Edição de Vídeos');
 /*!40000 ALTER TABLE `utilidade` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -187,4 +249,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-06-21 20:00:06
+-- Dump completed on 2023-06-26  1:04:37

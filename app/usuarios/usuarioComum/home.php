@@ -5,7 +5,7 @@ session_start();
 if (isset($_SESSION['usuario_logado'])) {
     $nomeUsuario = explode(",", $_SESSION['usuario_logado'])[0];
     $tipoUsuario = explode(",", $_SESSION['usuario_logado'])[1];
-    
+
     if ($tipoUsuario != '1') {
         header('Location: ..usuarioAdm/home.php');
         exit();
@@ -16,7 +16,6 @@ if (isset($_SESSION['usuario_logado'])) {
 }
 
 if (isset($_POST['btnBusca'])) {
-    //Atribui valores para adicionar no cookie
     $precoMaximo = $_POST['precoMaximo'];
     $marca = $_POST['marca'];
     $fabricante = $_POST['fabricante'];
@@ -24,6 +23,7 @@ if (isset($_POST['btnBusca'])) {
     $clock = $_POST['clock'];
     $consumo = $_POST['consumo'];
     $utilidades = array();
+    
     if (isset($_POST['streaming'])) {
         $utilidades[] = $_POST['streaming'];
     }
@@ -102,7 +102,7 @@ if (isset($_POST['btnBusca'])) {
 <html>
 
 <head>
-    <title>HomeUser</title>
+    <title>Home</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <style>
         .card-img-top {
@@ -304,9 +304,6 @@ if (isset($_POST['btnBusca'])) {
         </form>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <script>
         // Adicionar manipulador de eventos para atualizar as estrelas selecionadas
         const ratingInputs = document.querySelectorAll('.rating input[type="radio"]');
@@ -320,6 +317,9 @@ if (isset($_POST['btnBusca'])) {
             console.log(`Avaliação: ${selectedRating}`);
         }
     </script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
 
 </html>

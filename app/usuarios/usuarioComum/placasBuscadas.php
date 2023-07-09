@@ -1,17 +1,19 @@
 <?php
-    require_once 'C:\xampp\htdocs\qualplacaweb\app\conexao_database.php';
+require_once 'C:\xampp\htdocs\qualplacaweb\app\conexao_database.php';
 
-    if (isset($_COOKIE['usuario_logado'])) {
-        $nomeUsuario = explode(",", $_COOKIE['usuario_logado'])[0];
-        $tipoUsuario = explode(",", $_COOKIE['usuario_logado'])[1];
-        if ($tipoUsuario != '1') {
-            header('Location: usuarios/usuarioAdm/home.php');
-            exit();
-        }
-    } else {
-        header("Location: usuarios/deslogado.php");
+session_start();
+if (isset($_SESSION['usuario_logado'])) {
+    $nomeUsuario = explode(",", $_SESSION['usuario_logado'])[0];
+    $tipoUsuario = explode(",", $_SESSION['usuario_logado'])[1];
+
+    if ($tipoUsuario != '1') {
+        header('Location: ..usuarioAdm/home.php');
         exit();
     }
+} else {
+    header("Location: ../deslogado.php");
+    exit();
+}
 ?>
 
 <!DOCTYPE html>

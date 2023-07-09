@@ -1,15 +1,17 @@
 <?php
 require_once 'C:\xampp\htdocs\qualplacaweb\app\conexao_database.php';
 
-if (isset($_COOKIE['usuario_logado'])) {
-    $nomeUsuario = explode(",", $_COOKIE['usuario_logado'])[0];
-    $tipoUsuario = explode(",", $_COOKIE['usuario_logado'])[1];
+session_start();
+if (isset($_SESSION['usuario_logado'])) {
+    $nomeUsuario = explode(",", $_SESSION['usuario_logado'])[0];
+    $tipoUsuario = explode(",", $_SESSION['usuario_logado'])[1];
+
     if ($tipoUsuario != '1') {
-        header('Location: usuarios/usuarioAdm/home.php');
+        header('Location: ..usuarioAdm/home.php');
         exit();
     }
 } else {
-    header("Location: usuarios/deslogado.php");
+    header("Location: ../deslogado.php");
     exit();
 }
 
@@ -118,8 +120,8 @@ if (isset($_GET['codigo_placa'])) {
         }
 
         .rating label:hover,
-        .rating label:hover ~ label,
-        .rating input[type="radio"]:checked ~ label {
+        .rating label:hover~label,
+        .rating input[type="radio"]:checked~label {
             color: #ffdd00;
         }
 

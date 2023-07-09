@@ -1,15 +1,16 @@
 <?php
 require_once 'C:\xampp\htdocs\qualplacaweb\app\conexao_database.php';
 
-if (isset($_COOKIE['usuario_logado'])) {
-    $nomeUsuario = explode(",", $_COOKIE['usuario_logado'])[0];
-    $tipoUsuario = explode(",", $_COOKIE['usuario_logado'])[1];
+session_start();
+if (isset($_SESSION['usuario_logado'])) {
+    $nomeUsuario = explode(",", $_SESSION['usuario_logado'])[0];
+    $tipoUsuario = explode(",", $_SESSION['usuario_logado'])[1];
     if ($tipoUsuario != '0') {
         header('Location: ../usuarios/usuarioComum/home.php');
         exit();
     }
 } else {
-    header("Location: usuarios/deslogado.php");
+    header("Location: ../deslogado.php");
     exit();
 }
 ?>
@@ -18,11 +19,11 @@ if (isset($_COOKIE['usuario_logado'])) {
 <html>
 
 <head>
-    <title>HomeAdm</title>
+    <title>Cadastro Placa</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <style>
         body {
-            padding-top: 80px;
+            padding-top: 120px;
         }
 
         form {
@@ -41,20 +42,14 @@ if (isset($_COOKIE['usuario_logado'])) {
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-        <a class="navbar-brand" href="#">Logo</a>
+        <a class="navbar-brand" href="#"><img src="../../img/logo.png" class="card-img-top" alt="Imagem de login" style="width: 100px;height: 70px;"></a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link" href="home.php">Pagina Inicial</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="ajustes.php">Ajustes Sugeridos</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#modal-signup" data-toggle="modal">Cadastrar Administrador</a>
+                    <a class="nav-link" href="home.php">Home</a>
                 </li>
             </ul>
         </div>
@@ -205,33 +200,7 @@ if (isset($_COOKIE['usuario_logado'])) {
         }
         ?>
     </div>
-    <div id="modal-signup" class="modal fade">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Cadastro</h5>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <form>
-                        <div class="form-group">
-                            <label for="signup-name">Nome</label>
-                            <input type="text" class="form-control" id="signup-name" placeholder="Digite o nome">
-                        </div>
-                        <div class="form-group">
-                            <label for="signup-email">E-mail</label>
-                            <input type="email" class="form-control" id="signup-email" placeholder="Digite o e-mail">
-                        </div>
-                        <div class="form-group">
-                            <label for="signup-password">Senha</label>
-                            <input type="password" class="form-control" id="signup-password" placeholder="Digite a senha">
-                        </div>
-                        <button type="submit" name="btnCadastro" class="btn btn-primary">Cadastrar</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>

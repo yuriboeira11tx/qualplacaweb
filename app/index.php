@@ -1,18 +1,19 @@
 <?php
-  require_once 'conexao_database.php';
+require_once 'conexao_database.php';
 
-  if (isset($_COOKIE['usuario_logado'])) {
-    $nomeUsuario = explode(",", $_COOKIE['usuario_logado'])[0];
-    $tipoUsuario = explode(",", $_COOKIE['usuario_logado'])[1];
-    
-    // Redirecionar com base no tipo de usuário
-    if ($tipoUsuario == '0') {
-      header('Location: usuarios/usuarioAdm/home.php');
-      exit();
-    }
-    header('Location: usuarios/usuarioComum/home.php');
+session_start();
+if (isset($_SESSION['usuario_logado'])) {
+  $nomeUsuario = explode(",", $_SESSION['usuario_logado'])[0];
+  $tipoUsuario = explode(",", $_SESSION['usuario_logado'])[1];
+
+  // Redirecionar com base no tipo de usuário
+  if ($tipoUsuario == '0') {
+    header('Location: usuarios/usuarioAdm/home.php');
     exit();
   }
+  header('Location: usuarios/usuarioComum/home.php');
+  exit();
+}
 ?>
 
 <!DOCTYPE html>
@@ -61,17 +62,13 @@
 
             // Redirecionar com base no tipo de usuário
             if ($usuario['tipo'] == '0') {
-              // Definir o cookie com o nome do usuário e tipo do usuário
               $nomeUsuario = $usuario['nome'];
-              $tempoExpiracao = time() + 3600;
-              setcookie('usuario_logado', "$nomeUsuario,0", $tempoExpiracao);
+              $_SESSION['usuario_logado'] = "$nomeUsuario,0";
               header('Location: usuarios/usuarioAdm/home.php');
               exit();
-            } else{
-              // Definir o cookie com o nome do usuário e tipo do usuário
+            } else {
               $nomeUsuario = $usuario['nome'];
-              $tempoExpiracao = time() + 3600;
-              setcookie('usuario_logado', "$nomeUsuario,1", $tempoExpiracao);
+              $_SESSION['usuario_logado'] = "$nomeUsuario,1";
               header('Location: usuarios/usuarioComum/home.php');
               exit();
             }
@@ -112,26 +109,26 @@
             <button type="submit" name="btnCadastro" class="btn btn-primary">Cadastrar</button>
           </form>
           <?php
-              if (isset($_POST['btnCadastro']) && ($_POST['nome']) && ($_POST['email']) && ($_POST['senha'])) {
-                $nome = $_POST['nome'];
-                $email = $_POST['email'];
-                $senha = $_POST['senha'];
+          if (isset($_POST['btnCadastro']) && ($_POST['nome']) && ($_POST['email']) && ($_POST['senha'])) {
+            $nome = $_POST['nome'];
+            $email = $_POST['email'];
+            $senha = $_POST['senha'];
 
-                // Executa a query de inserção
-                $query = "INSERT INTO usuario (nome, email, senha, tipo) VALUES ('$nome', '$email', '$senha', '0')";
-                $resultado = mysqli_query($conn, $query);
+            // Executa a query de inserção
+            $query = "INSERT INTO usuario (nome, email, senha, tipo) VALUES ('$nome', '$email', '$senha', '1')";
+            $resultado = mysqli_query($conn, $query);
 
-                // Verifica se o cadastro foi realizado com sucesso
-                if ($resultado) {
-                    echo '<script>alert("Usuário cadastrado com sucesso!");</script>';
-                    setcookie('usuario_logado', "$signupNome,1", $tempoExpiracao);
-                    header('Location: usuarios/usuarioComum/home.php');    
-                    exit();
-                  } else {
-                    echo '<script>alert("Erro ao cadastrar '. mysqli_error($conn) . ' ")' . ';</script>';
-                }
+            // Verifica se o cadastro foi realizado com sucesso
+            if ($resultado) {
+              echo '<script>alert("Usuário cadastrado com sucesso!");</script>';
+              setcookie('usuario_logado', "$signupNome,1", $tempoExpiracao);
+              header('Location: usuarios/usuarioComum/home.php');
+              exit();
+            } else {
+              echo '<script>alert("Erro ao cadastrar ' . mysqli_error($conn) . ' ")' . ';</script>';
             }
-            ?>
+          }
+          ?>
         </div>
       </div>
     </div>

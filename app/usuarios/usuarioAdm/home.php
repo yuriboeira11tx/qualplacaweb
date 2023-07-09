@@ -1,9 +1,10 @@
 <?php
 require_once 'C:\xampp\htdocs\qualplacaweb\app\conexao_database.php';
 
-if (isset($_COOKIE['usuario_logado'])) {
-    $nomeUsuario = explode(",", $_COOKIE['usuario_logado'])[0];
-    $tipoUsuario = explode(",", $_COOKIE['usuario_logado'])[1];
+session_start();
+if (isset($_SESSION['usuario_logado'])) {
+    $nomeUsuario = explode(",", $_SESSION['usuario_logado'])[0];
+    $tipoUsuario = explode(",", $_SESSION['usuario_logado'])[1];
     if ($tipoUsuario != '0') {
         header('Location: ../usuarios/usuarioComum/home.php');
         exit();
@@ -12,13 +13,14 @@ if (isset($_COOKIE['usuario_logado'])) {
     header("Location: ../deslogado.php");
     exit();
 }
+
 ?>
 
 <!DOCTYPE html>
 <html>
 
 <head>
-    <title>HomeAdm</title>
+    <title>Administração</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <style>
         .container {
@@ -91,10 +93,8 @@ if (isset($_COOKIE['usuario_logado'])) {
 
         .image-fit {
             height: 200px;
-            /* Defina a altura desejada */
             width: auto;
             object-fit: cover;
-            /* Controla o ajuste da imagem */
         }
     </style>
 </head>
@@ -111,17 +111,19 @@ if (isset($_COOKIE['usuario_logado'])) {
                     <a class="nav-link" href="cadastroPlaca.php">Cadastrar Placa</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="ajustes.php">Ajustes Sugeridos</a>
+                    <a class="nav-link" href="#modal-signup" data-toggle="modal">Cadastrar Administrador</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#modal-signup" data-toggle="modal">Cadastrar Administrador</a>
+                    <a class="nav-link" href="usuarios.php">Usuários</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="logout.php" style="color: red;">Sair</a>
                 </li>
             </ul>
         </div>
     </nav>
     <div class="container">
         <?php
-        // Consulta SQL para recuperar todas as placas com os nomes de marca, fabricante e utilidades
         $sql = "SELECT p.*, m.nome AS marca_nome, f.nome AS fabricante_nome, GROUP_CONCAT(u.nome SEPARATOR ', ') AS utilidades_nome
         FROM placa p
         INNER JOIN marca m ON p.marca_id = m.id
@@ -134,6 +136,7 @@ if (isset($_COOKIE['usuario_logado'])) {
         if ($result->num_rows > 0) {
             echo '<div class="row row-cols-1 row-cols-md-3">';
             while ($row = $result->fetch_assoc()) {
+                $placaId = $row['Id'];
                 $nome = $row['nome'];
                 $marca_nome = $row['marca_nome'];
                 $fabricante_nome = $row['fabricante_nome'];
@@ -142,6 +145,7 @@ if (isset($_COOKIE['usuario_logado'])) {
                 $clock = $row['clock'];
                 $consumo = $row['consumo'];
                 $imagem = $row['imagem'];
+                $preco = $row["preco"];
 
                 echo '<div class="col mb-4">';
                 echo '<div class="card d-flex h-100">';
@@ -154,6 +158,9 @@ if (isset($_COOKIE['usuario_logado'])) {
                 echo '<p class="card-text"><strong>VRAM:</strong> ' . $vram . '</p>';
                 echo '<p class="card-text"><strong>Clock:</strong> ' . $clock . '</p>';
                 echo '<p class="card-text"><strong>Consumo:</strong> ' . $consumo . '</p>';
+                echo '<h5 class="card-text text-success"><strong>Preço: R$</strong> ' . $preco . '</h5>';
+                echo '<a href="editarPlaca.php?id=' . $placaId . '" class="btn btn-primary">Editar</a>';
+                echo ' <a href="excluirPlaca.php?id=' . $placaId . '" class="btn btn-danger">Excluir</a>';
                 echo '</div>';
                 echo '</div>';
                 echo '</div>';
@@ -164,9 +171,6 @@ if (isset($_COOKIE['usuario_logado'])) {
         }
         ?>
     </div>
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <script>
         const ratingInputs = document.querySelectorAll('.rating input[type="radio"]');
         ratingInputs.forEach((input) => {
@@ -178,59 +182,52 @@ if (isset($_COOKIE['usuario_logado'])) {
             console.log(`Avaliação: ${selectedRating}`);
         }
     </script>
-</body>
+    <div id="modal-signup" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Cadastro</h5>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <form method="post">
+                        <div class="form-group">
+                            <label for="signup-name">Nome</label>
+                            <input type="text" class="form-control" id="signup-name" name='nome' placeholder="Digite o nome">
+                        </div>
+                        <div class="form-group">
+                            <label for="signup-email">E-mail</label>
+                            <input type="email" class="form-control" id="signup-email" name='email' placeholder="Digite o e-mail">
+                        </div>
+                        <div class="form-group">
+                            <label for="signup-password">Senha</label>
+                            <input type="password" class="form-control" id="signup-password" name='senha' placeholder="Digite a senha">
+                        </div>
+                        <button type="submit" name="btnCadastro" class="btn btn-primary">Cadastrar</button>
+                    </form>
+                    <?php
+                    if (isset($_POST['btnCadastro']) && ($_POST['nome']) && ($_POST['email']) && ($_POST['senha'])) {
+                        $nome = $_POST['nome'];
+                        $email = $_POST['email'];
+                        $senha = $_POST['senha'];
 
-</html>
+                        $query = "INSERT INTO usuario (nome, email, senha, tipo) VALUES ('$nome', '$email', '$senha', '0')";
+                        $resultado = mysqli_query($conn, $query);
 
-<div id="modal-signup" class="modal fade">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Cadastro</h5>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-            </div>
-            <div class="modal-body">
-                <form method="post">
-                    <div class="form-group">
-                        <label for="signup-name">Nome</label>
-                        <input type="text" class="form-control" id="signup-name" name='nome' placeholder="Digite o nome">
-                    </div>
-                    <div class="form-group">
-                        <label for="signup-email">E-mail</label>
-                        <input type="email" class="form-control" id="signup-email" name='email' placeholder="Digite o e-mail">
-                    </div>
-                    <div class="form-group">
-                        <label for="signup-password">Senha</label>
-                        <input type="password" class="form-control" id="signup-password" name='senha' placeholder="Digite a senha">
-                    </div>
-                    <button type="submit" name="btnCadastro" class="btn btn-primary">Cadastrar</button>
-                </form>
-                <?php
-                if (isset($_POST['btnCadastro']) && ($_POST['nome']) && ($_POST['email']) && ($_POST['senha'])) {
-                    $nome = $_POST['nome'];
-                    $email = $_POST['email'];
-                    $senha = $_POST['senha'];
-
-                    // Executa a query de inserção
-                    $query = "INSERT INTO usuario (nome, email, senha, tipo) VALUES ('$nome', '$email', '$senha', '0')";
-                    $resultado = mysqli_query($conn, $query);
-
-                    // Verifica se o cadastro foi realizado com sucesso
-                    if ($resultado) {
-                        echo '<script>alert("Usuário cadastrado com sucesso!");</script>';
-                    } else {
-                        echo '<script>alert("Erro ao cadastrar ' . mysqli_error($conn) . ' ")' . ';</script>';
+                        if ($resultado) {
+                            echo '<script>alert("Usuário cadastrado com sucesso!");</script>';
+                        } else {
+                            echo '<script>alert("Erro ao cadastrar ' . mysqli_error($conn) . ' ")' . ';</script>';
+                        }
                     }
-                }
-                ?>
+                    ?>
+                </div>
             </div>
         </div>
     </div>
-</div>
-
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
 
 </html>

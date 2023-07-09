@@ -26,7 +26,7 @@ if (isset($_COOKIE['usuario_logado'])) {
             flex-wrap: wrap;
             justify-content: center;
             gap: 20px;
-            padding-top: 70px;
+            padding-top: 120px;
         }
 
         .placa-card {
@@ -88,6 +88,14 @@ if (isset($_COOKIE['usuario_logado'])) {
             flex-direction: column;
             align-items: flex-start;
         }
+
+        .image-fit {
+            height: 200px;
+            /* Defina a altura desejada */
+            width: auto;
+            object-fit: cover;
+            /* Controla o ajuste da imagem */
+        }
     </style>
 </head>
 
@@ -113,43 +121,44 @@ if (isset($_COOKIE['usuario_logado'])) {
     </nav>
     <div class="container">
         <?php
-        // Consulta SQL para recuperar todas as placas
-        $sql = "SELECT * FROM placa";
+        // Consulta SQL para recuperar todas as placas com os nomes de marca, fabricante e utilidades
+        $sql = "SELECT p.*, m.nome AS marca_nome, f.nome AS fabricante_nome, GROUP_CONCAT(u.nome SEPARATOR ', ') AS utilidades_nome
+        FROM placa p
+        INNER JOIN marca m ON p.marca_id = m.id
+        INNER JOIN fabricante f ON p.fabricante_id = f.id
+        INNER JOIN placa_utilidade pu ON p.id = pu.placa_id
+        INNER JOIN utilidade u ON pu.utilidade_id = u.id
+        GROUP BY p.id";
         $result = $conn->query($sql);
 
         if ($result->num_rows > 0) {
+            echo '<div class="row row-cols-1 row-cols-md-3">';
             while ($row = $result->fetch_assoc()) {
                 $nome = $row['nome'];
-                $marca_id = $row['marca_Id'];
-                $fabricante_id = $row['fabricante_Id'];
+                $marca_nome = $row['marca_nome'];
+                $fabricante_nome = $row['fabricante_nome'];
+                $utilidades_nome = $row['utilidades_nome'];
                 $vram = $row['vram'];
                 $clock = $row['clock'];
                 $consumo = $row['consumo'];
                 $imagem = $row['imagem'];
 
-                // Consulta SQL para obter o nome da marca
-                $marca_sql = "SELECT nome FROM marca WHERE id = $marca_id";
-                $marca_result = $conn->query($marca_sql);
-                $marca_nome = $marca_result->fetch_assoc()['nome'];
-
-                // Consulta SQL para obter o nome do fabricante
-                $fabricante_sql = "SELECT nome FROM fabricante WHERE id = $fabricante_id";
-                $fabricante_result = $conn->query($fabricante_sql);
-                $fabricante_nome = $fabricante_result->fetch_assoc()['nome'];
-
-                // Exibe a placa em um card estilizado com Bootstrap
-                echo '<div class="card">';
-                echo '<img src="data:image/jpeg;base64,' . base64_encode($imagem) . '" class="card-img-top" alt="Imagem da Placa">';
-                echo '<div class="card-body">';
-                echo '<h5 class="card-title">' . $nome . '</h5>';
+                echo '<div class="col mb-4">';
+                echo '<div class="card d-flex h-100">';
+                echo '<img src="data:image/jpeg;base64,' . base64_encode($imagem) . '" class="card-img-top img-fluid image-fit" alt="Imagem da Placa">';
+                echo '<div class="card-body flex-fill">';
+                echo '<h3 class="card-title">' . $nome . '</h3>';
                 echo '<p class="card-text"><strong>Marca:</strong> ' . $marca_nome . '</p>';
                 echo '<p class="card-text"><strong>Fabricante:</strong> ' . $fabricante_nome . '</p>';
+                echo '<p class="card-text"><strong>Utilidades:</strong> ' . $utilidades_nome . '</p>';
                 echo '<p class="card-text"><strong>VRAM:</strong> ' . $vram . '</p>';
                 echo '<p class="card-text"><strong>Clock:</strong> ' . $clock . '</p>';
                 echo '<p class="card-text"><strong>Consumo:</strong> ' . $consumo . '</p>';
                 echo '</div>';
                 echo '</div>';
+                echo '</div>';
             }
+            echo '</div>';
         } else {
             echo 'Nenhuma placa encontrada';
         }
@@ -159,13 +168,11 @@ if (isset($_COOKIE['usuario_logado'])) {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <script>
-        // Adicionar manipulador de eventos para atualizar as estrelas selecionadas
         const ratingInputs = document.querySelectorAll('.rating input[type="radio"]');
         ratingInputs.forEach((input) => {
             input.addEventListener('change', updateRating);
         });
 
-        // Função para atualizar as estrelas selecionadas
         function updateRating() {
             const selectedRating = this.value;
             console.log(`Avaliação: ${selectedRating}`);

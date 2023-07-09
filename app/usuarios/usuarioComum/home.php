@@ -1,58 +1,59 @@
 <?php
-    require_once 'C:\xampp\htdocs\qualplacaweb\app\conexao_database.php';
+require_once 'C:\xampp\htdocs\qualplacaweb\app\conexao_database.php';
 
-    if (isset($_COOKIE['usuario_logado'])) {
-        $nomeUsuario = explode(",", $_COOKIE['usuario_logado'])[0];
-        $tipoUsuario = explode(",", $_COOKIE['usuario_logado'])[1];
-        if ($tipoUsuario != '1') {
-            header('Location: usuarios/usuarioAdm/home.php');
-            exit();
-        }
-    } else {
-        header("Location: usuarios/deslogado.php");
+session_start();
+if (isset($_SESSION['usuario_logado'])) {
+    $nomeUsuario = explode(",", $_SESSION['usuario_logado'])[0];
+    $tipoUsuario = explode(",", $_SESSION['usuario_logado'])[1];
+    if ($tipoUsuario != '0') {
+        header('Location: ../usuarios/usuarioComum/home.php');
         exit();
     }
+} else {
+    header("Location: ../deslogado.php");
+    exit();
+}
 
-    if (isset($_POST['btnBusca'])) {
-        //Atribui valores para adicionar no cookie
-        $precoMaximo = $_POST['precoMaximo'];
-        $marca = $_POST['marca'];
-        $fabricante = $_POST['fabricante'];
-        $memoria = $_POST['memoria'];
-        $clock = $_POST['clock'];
-        $consumo = $_POST['consumo'];
-        $utilidades = array();
-        if(isset($_POST['streaming'])){
-            $utilidades[] = $_POST['streaming'];
+if (isset($_POST['btnBusca'])) {
+    //Atribui valores para adicionar no cookie
+    $precoMaximo = $_POST['precoMaximo'];
+    $marca = $_POST['marca'];
+    $fabricante = $_POST['fabricante'];
+    $memoria = $_POST['memoria'];
+    $clock = $_POST['clock'];
+    $consumo = $_POST['consumo'];
+    $utilidades = array();
+    if (isset($_POST['streaming'])) {
+        $utilidades[] = $_POST['streaming'];
+    }
+    if (isset($_POST['computacao'])) {
+        $utilidades[] = $_POST['computacao'];
+    }
+    if (isset($_POST['mineracao'])) {
+        $utilidades[] = $_POST['mineracao'];
+    }
+    if (isset($_POST['edicao'])) {
+        $utilidades[] = $_POST['edicao'];
+    }
+    if (isset($_POST['jogos'])) {
+        $utilidades[] = $_POST['jogos'];
+    }
+    $consumo = $_POST['consumo'];
+    $estrelas = '';
+    if (isset($_POST['rating'])) {
+        if ($_POST['rating'] == 1) {
+            $estrelas = 1;
+        } elseif ($_POST['rating'] == 2) {
+            $estrelas = 2;
+        } elseif ($_POST['rating'] == 2) {
+            $estrelas = 3;
+        } elseif ($_POST['rating'] == 3) {
+            $estrelas = 4;
+        } elseif ($_POST['rating'] == 4) {
+            $estrelas = 5;
         }
-        if(isset($_POST['computacao'])){
-            $utilidades[] = $_POST['computacao'];
-        }
-        if(isset($_POST['mineracao'])){
-            $utilidades[] = $_POST['mineracao'];
-        }
-        if(isset($_POST['edicao'])){
-            $utilidades[] = $_POST['edicao'];
-        }
-        if(isset($_POST['jogos'])){
-            $utilidades[] = $_POST['jogos'];
-        }                 
-        $consumo = $_POST['consumo'];
-        $estrelas = '';
-        if(isset($_POST['rating'])){
-            if($_POST['rating'] == 1){
-                $estrelas = 1;
-            }elseif($_POST['rating'] == 2){
-                $estrelas = 2;
-            }elseif($_POST['rating'] == 2){
-                $estrelas = 3;
-            }elseif($_POST['rating'] == 3){
-                $estrelas = 4;
-            }elseif($_POST['rating'] == 4){
-                $estrelas = 5;
-            }
-        }
-        $sql = "SELECT p.*, m.nome AS marca_nome, f.nome AS fabricante_nome, GROUP_CONCAT(u.nome SEPARATOR ', ') AS utilidades_nome
+    }
+    $sql = "SELECT p.*, m.nome AS marca_nome, f.nome AS fabricante_nome, GROUP_CONCAT(u.nome SEPARATOR ', ') AS utilidades_nome
             FROM placa p
             INNER JOIN marca m ON p.marca_id = m.id
             INNER JOIN fabricante f ON p.fabricante_id = f.id
@@ -60,41 +61,41 @@
             INNER JOIN utilidade u ON pu.utilidade_id = u.id
             WHERE 1=1"; // Cláusula WHERE inicial para permitir a adição de condições dinamicamente
 
-        if (!empty($marca)) {
-            $sql .= " AND m.nome = '$marca'";
-        }
-
-        if (!empty($fabricante)) {
-            $sql .= " AND f.Id = '$fabricante'";
-        }
-
-        if (!empty($memoria)) {
-            $sql .= " AND p.vram <= '$memoria'";
-        }
-
-        if (!empty($clock)) {
-            $sql .= " AND p.clock <= '$clock'";
-        }
-
-        if (!empty($utilidades)) {
-            $utilidades = implode("', '", $utilidades);
-            $sql .= " AND u.Id IN ('$utilidades')";
-        }
-
-        if (!empty($consumo)) {
-            $sql .= " AND p.consumo <= '$consumo'";
-        }
-
-        if (!empty($estrelas)) {
-            $sql .= " AND p.estrelas >= '$estrelas'";
-        }
-
-        $sql .= " GROUP BY p.id";
-        $sql = serialize($sql);
-
-        header('Location: placasBuscadas.php?sql='.urlencode($sql));
-        exit();
+    if (!empty($marca)) {
+        $sql .= " AND m.nome = '$marca'";
     }
+
+    if (!empty($fabricante)) {
+        $sql .= " AND f.Id = '$fabricante'";
+    }
+
+    if (!empty($memoria)) {
+        $sql .= " AND p.vram <= '$memoria'";
+    }
+
+    if (!empty($clock)) {
+        $sql .= " AND p.clock <= '$clock'";
+    }
+
+    if (!empty($utilidades)) {
+        $utilidades = implode("', '", $utilidades);
+        $sql .= " AND u.Id IN ('$utilidades')";
+    }
+
+    if (!empty($consumo)) {
+        $sql .= " AND p.consumo <= '$consumo'";
+    }
+
+    if (!empty($estrelas)) {
+        $sql .= " AND p.estrelas >= '$estrelas'";
+    }
+
+    $sql .= " GROUP BY p.id";
+    $sql = serialize($sql);
+
+    header('Location: placasBuscadas.php?sql=' . urlencode($sql));
+    exit();
+}
 ?>
 <!DOCTYPE html>
 <html>

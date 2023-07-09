@@ -5,8 +5,9 @@ session_start();
 if (isset($_SESSION['usuario_logado'])) {
     $nomeUsuario = explode(",", $_SESSION['usuario_logado'])[0];
     $tipoUsuario = explode(",", $_SESSION['usuario_logado'])[1];
-    if ($tipoUsuario != '0') {
-        header('Location: ../usuarios/usuarioComum/home.php');
+    
+    if ($tipoUsuario != '1') {
+        header('Location: ..usuarioAdm/home.php');
         exit();
     }
 } else {

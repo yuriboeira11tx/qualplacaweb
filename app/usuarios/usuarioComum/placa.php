@@ -18,7 +18,7 @@ if (isset($_GET['codigo_placa'])) {
     $codigo_placa = $_GET['codigo_placa'];
 
     // Obter informações da placa
-    $sql = "SELECT * FROM placas WHERE codigo_placa = $codigo_placa";
+    $sql = "SELECT * FROM placas WHERE Id = $codigo_placa";
     $result = $conn->query($sql);
 
     if ($result->num_rows > 0) {

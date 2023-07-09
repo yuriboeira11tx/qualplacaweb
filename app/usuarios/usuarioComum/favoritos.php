@@ -4,9 +4,13 @@
 <head>
     <title>Favoritos</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <style>
-        body {
-            padding-top: 60px;
+    <style>       
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            padding-top: 120px;
         }
         
         .card {
@@ -31,24 +35,21 @@
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-        <a class="navbar-brand" href="#">Logo</a>
+        <a class="navbar-brand" href="#"><img src="../../img/logo.png" class="card-img-top" alt="Imagem de login" style="width: 100px;height: 70px;"></a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link" href="home.php">Pagina Principal</a>
+                    <a class="nav-link" href="home.php">Buscar Placas</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="placas_avaliadas.php">Placas Avaliadas</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="minhas_sugestoes.php">Minhas Sugestões</a>
-                </li>
             </ul>
         </div>
-    </nav>  
+    </nav>         
 
     <div class="container">
         <h2>Favoritos</h2>

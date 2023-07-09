@@ -8,7 +8,7 @@
             header('Location: usuarios/usuarioComum/home.php');
             exit();
         }
-    }else{
+    } else {
         header("Location: usuarios/deslogado.php");
         exit();
     }

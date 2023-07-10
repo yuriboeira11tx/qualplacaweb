@@ -121,12 +121,6 @@ if (isset($_SESSION['usuario_logado'])) {
                 while ($row = $result->fetch_assoc()) {
                     $codigo_placa = $row['Id'];
                     $nome = $row['nome'];
-                    $marca_nome = $row['marca_nome'];
-                    $fabricante_nome = $row['fabricante_nome'];
-                    $utilidades_nome = $row['utilidades_nome'];
-                    $vram = $row['vram'];
-                    $clock = $row['clock'];
-                    $consumo = $row['consumo'];
                     $imagem = $row['imagem'];
 
                     echo '<div class="placa-card">';

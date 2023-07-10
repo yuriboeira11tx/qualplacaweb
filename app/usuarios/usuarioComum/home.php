@@ -23,7 +23,7 @@ if (isset($_POST['btnBusca'])) {
     $clock = $_POST['clock'];
     $consumo = $_POST['consumo'];
     $utilidades = array();
-
+    
     if (isset($_POST['streaming'])) {
         $utilidades[] = $_POST['streaming'];
     }
@@ -40,27 +40,23 @@ if (isset($_POST['btnBusca'])) {
         $utilidades[] = $_POST['jogos'];
     }
     $consumo = $_POST['consumo'];
-    $estrelas = '';
-    if (isset($_POST['rating'])) {
-        if ($_POST['rating'] == 1) {
-            $estrelas = 1;
-        } elseif ($_POST['rating'] == 2) {
-            $estrelas = 2;
-        } elseif ($_POST['rating'] == 2) {
-            $estrelas = 3;
-        } elseif ($_POST['rating'] == 3) {
-            $estrelas = 4;
-        } elseif ($_POST['rating'] == 4) {
-            $estrelas = 5;
-        }
-    }
-    $sql = "SELECT p.*, m.nome AS marca_nome, f.nome AS fabricante_nome, GROUP_CONCAT(u.nome SEPARATOR ', ') AS utilidades_nome
-            FROM placa p
-            INNER JOIN marca m ON p.marca_id = m.id
-            INNER JOIN fabricante f ON p.fabricante_id = f.id
-            INNER JOIN placa_utilidade pu ON p.id = pu.placa_id
-            INNER JOIN utilidade u ON pu.utilidade_id = u.id
-            WHERE 1=1"; // Cláusula WHERE inicial para permitir a adição de condições dinamicamente
+    $estrelas = $_POST['rating'];
+    
+    $sql = "SELECT p.*, m.nome AS marca_nome, f.nome AS fabricante_nome, GROUP_CONCAT(u.nome SEPARATOR ', ') AS utilidades_nome";
+    
+    if (!empty($estrelas)) {
+        $sql .= ", AVG(a.valor) AS estrelas 
+                FROM placa p 
+                INNER JOIN avaliacao a ON a.placa_Id = p.Id";
+    } else {
+        $sql .= " FROM placa p";
+    } 
+
+    $sql .= " INNER JOIN marca m ON p.marca_Id = m.Id
+                INNER JOIN fabricante f ON p.fabricante_Id = f.Id
+                INNER JOIN placa_utilidade pu ON p.Id = pu.placa_Id
+                INNER JOIN utilidade u ON pu.utilidade_Id = u.Id
+                WHERE 1=1";// Cláusula WHERE inicial para permitir a adição de condições dinamicamente
 
     if (!empty($marca)) {
         $sql .= " AND m.nome = '$marca'";
@@ -88,10 +84,12 @@ if (isset($_POST['btnBusca'])) {
     }
 
     if (!empty($estrelas)) {
-        $sql .= " AND p.estrelas >= '$estrelas'";
+        $sql .= " GROUP BY p.Id
+                HAVING AVG(a.valor) >= '$estrelas'";
+    } else {
+        $sql .= " GROUP BY p.Id";
     }
 
-    $sql .= " GROUP BY p.id";
     $sql = serialize($sql);
 
     header('Location: placasBuscadas.php?sql=' . urlencode($sql));
@@ -172,12 +170,6 @@ if (isset($_POST['btnBusca'])) {
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="placas_avaliadas.php">Placas Avaliadas</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="minhas_sugestoes.php">Minhas Sugestões</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="logout.php" style="color: red;">Sair</a>
                 </li>
             </ul>
         </div>

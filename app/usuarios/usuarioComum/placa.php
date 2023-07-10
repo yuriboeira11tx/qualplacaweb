@@ -66,23 +66,27 @@ if (isset($_GET['codigo_placa'])) {
     exit();
 }
 
-if (isset($_POST['btnAvaliar'])&& $_POST['rating'] != '') {
+if (isset($_POST['btnFavoritar'])) {
+    $sql = "SELECT * FROM favorito f WHERE f.usuario_Id = (SELECT u.Id FROM usuario u WHERE u.nome like '$nomeUsuario') AND f.placa_Id = '$codigo_placa'";
+    $result = $conn->query($sql);
+    if ($result->num_rows == 0) {
+        $query = "INSERT INTO favorito (usuario_Id, placa_Id) VALUES ((SELECT u.Id FROM usuario u WHERE u.nome like '$nomeUsuario'), '$codigo_placa')";
+
+        $resultado = $conn->query($query);
+
+        if ($resultado) {
+            header('Location: placa.php?codigo_placa=' . $codigo_placa);
+            exit();
+        }
+    } 
+}            
+
+if (isset($_POST['btnAvaliar']) && $_POST['rating'] != '') {
     $estrelas = $_POST['rating'];
     $comentario = $_POST['comentario'];
 
     // Executa a query de inserção
     $query = "INSERT INTO avaliacao (usuario_Id, placa_Id, valor, comentario, data) VALUES ((SELECT u.Id FROM usuario u WHERE u.nome like '$nomeUsuario'), '$codigo_placa', '$estrelas', '$comentario', NOW())";
-
-    $resultado = $conn->query($query);
-
-    if ($resultado) {
-        header('Location: placa.php?codigo_placa=' . $codigo_placa);
-        exit();
-    }
-}
-if (isset($_POST['btnFavoritar'])) {
-    // Executa a query de inserção
-    $query = "INSERT INTO favorito (usuario_Id, placa_Id) VALUES ((SELECT u.Id FROM usuario u WHERE u.nome like '$nomeUsuario'), '$codigo_placa')";
 
     $resultado = $conn->query($query);
 
@@ -101,7 +105,7 @@ if (isset($_POST['btnFavoritar'])) {
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <style>
         .container {
-            padding-top: 80px;
+            padding-top: 120px;
             width: 800px;
             margin: 0 auto;
         }
@@ -270,11 +274,10 @@ if (isset($_POST['btnFavoritar'])) {
                         <span><?php echo $consumo; ?></span>
                     </div>
                 </div>
-            <form method="post"> 
-                <button type="button" name="btnFavoritar" class="btn btn-primary favoritar-btn btn-centralizar">Favoritar</button>
-            </form>
+                <form method='post'>
+                    <button type='submit' name='btnFavoritar' class='btn btn-primary favoritar-btn btn-centralizar'>Favoritar</button>
+                </form>
         </div>
-
         <div class="placa-card">
             <div class="placa-info">
                 <h3 class="card-title">Avaliação</h3>

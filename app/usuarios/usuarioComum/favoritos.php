@@ -119,7 +119,7 @@ $result = $conn->query($sql);
     <?php
     if (isset($_POST['btnRemover'])) {
         $placaId = $_POST['placa_id'];
-        $sqlRemover = "DELETE FROM favorito WHERE usuario_id = $usuarioId AND placa_id = $placaId";
+        $sqlRemover = "DELETE FROM favorito WHERE usuario_id = (SELECT u.Id FROM usuario u WHERE u.nome like '$nomeUsuario') AND placa_id = $placaId";
         $resultRemover = $conn->query($sqlRemover);
 
         if ($resultRemover) {

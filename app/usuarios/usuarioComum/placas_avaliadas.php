@@ -185,7 +185,6 @@ $result = $conn->query($sql);
             echo "<script>alert('Erro ao remover avaliação: " . $conn->error . "');</script>";
         }
     }
-    
     ?>
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </body>

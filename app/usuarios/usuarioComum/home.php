@@ -23,7 +23,7 @@ if (isset($_POST['btnBusca'])) {
     $clock = $_POST['clock'];
     $consumo = $_POST['consumo'];
     $utilidades = array();
-    
+
     if (isset($_POST['streaming'])) {
         $utilidades[] = $_POST['streaming'];
     }
@@ -41,22 +41,22 @@ if (isset($_POST['btnBusca'])) {
     }
     $consumo = $_POST['consumo'];
     $estrelas = $_POST['rating'];
-    
+
     $sql = "SELECT p.*, m.nome AS marca_nome, f.nome AS fabricante_nome, GROUP_CONCAT(u.nome SEPARATOR ', ') AS utilidades_nome";
-    
+
     if (!empty($estrelas)) {
         $sql .= ", AVG(a.valor) AS estrelas 
                 FROM placa p 
                 INNER JOIN avaliacao a ON a.placa_Id = p.Id";
     } else {
         $sql .= " FROM placa p";
-    } 
+    }
 
     $sql .= " INNER JOIN marca m ON p.marca_Id = m.Id
                 INNER JOIN fabricante f ON p.fabricante_Id = f.Id
                 INNER JOIN placa_utilidade pu ON p.Id = pu.placa_Id
                 INNER JOIN utilidade u ON pu.utilidade_Id = u.Id
-                WHERE 1=1";// Cláusula WHERE inicial para permitir a adição de condições dinamicamente
+                WHERE 1=1"; // Cláusula WHERE inicial para permitir a adição de condições dinamicamente
 
     if (!empty($marca)) {
         $sql .= " AND m.nome = '$marca'";
@@ -170,6 +170,9 @@ if (isset($_POST['btnBusca'])) {
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="placas_avaliadas.php">Placas Avaliadas</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="logout.php" style="color: red;">Sair</a>
                 </li>
             </ul>
         </div>

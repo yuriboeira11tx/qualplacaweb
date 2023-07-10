@@ -173,11 +173,11 @@ $result = $conn->query($sql);
     </div>
 
     <?php
-    if (isset($_POST['btnRemover']) && $_POST['id_avaliacao'] != '') {
+    if (isset($_POST['btnRemover']) && isset($_POST['id_avaliacao'])) {
         $id_avaliacao = $_POST['id_avaliacao'];
-        $sqlRemover = "DELETE FROM avaliacao WHERE a.Id= '$id_avaliacao'";
+        $sqlRemover = "DELETE FROM avaliacao WHERE Id = '$id_avaliacao'";
         $resultRemover = $conn->query($sqlRemover);
-
+    
         if ($resultRemover) {
             echo "<script>alert('Avaliação removida com sucesso!');</script>";
             echo "<script>window.location.href = 'placas_avaliadas.php';</script>";
@@ -185,6 +185,7 @@ $result = $conn->query($sql);
             echo "<script>alert('Erro ao remover avaliação: " . $conn->error . "');</script>";
         }
     }
+    
     ?>
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </body>

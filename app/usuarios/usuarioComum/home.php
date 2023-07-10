@@ -23,7 +23,7 @@ if (isset($_POST['btnBusca'])) {
     $clock = $_POST['clock'];
     $consumo = $_POST['consumo'];
     $utilidades = array();
-    
+
     if (isset($_POST['streaming'])) {
         $utilidades[] = $_POST['streaming'];
     }
@@ -175,6 +175,9 @@ if (isset($_POST['btnBusca'])) {
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="minhas_sugestoes.php">Minhas Sugestões</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="logout.php" style="color: red;">Sair</a>
                 </li>
             </ul>
         </div>

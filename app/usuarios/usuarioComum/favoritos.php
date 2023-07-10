@@ -1,10 +1,36 @@
+<?php
+require_once 'C:\xampp\htdocs\qualplacaweb\app\conexao_database.php';
+
+session_start();
+if (isset($_SESSION['usuario_logado'])) {
+    $nomeUsuario = explode(",", $_SESSION['usuario_logado'])[0];
+    $tipoUsuario = explode(",", $_SESSION['usuario_logado'])[1];
+
+    if ($tipoUsuario != '1') {
+        header('Location: ..usuarioAdm/home.php');
+        exit();
+    }
+} else {
+    header("Location: ../deslogado.php");
+    exit();
+}
+
+$usuarioId = explode(",", $_SESSION['usuario_logado'])[1];
+$sql = "SELECT p.*, m.nome AS marca_nome, f.nome AS fabricante_nome
+        FROM placa p
+        INNER JOIN marca m ON p.marca_id = m.id
+        INNER JOIN fabricante f ON p.fabricante_id = f.id
+        INNER JOIN favorito fa ON p.id = fa.placa_id
+        WHERE fa.usuario_id = $usuarioId";
+$result = $conn->query($sql);
+?>
 <!DOCTYPE html>
 <html>
 
 <head>
     <title>Favoritos</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <style>       
+    <style>
         .container {
             display: flex;
             flex-wrap: wrap;
@@ -12,7 +38,7 @@
             gap: 20px;
             padding-top: 120px;
         }
-        
+
         .card {
             width: 18rem;
             margin-bottom: 20px;
@@ -49,44 +75,54 @@
                 </li>
             </ul>
         </div>
-    </nav>         
+    </nav>
 
     <div class="container">
-        <h2>Favoritos</h2>
-        <div class="row">
-            <div class="col-sm-4">
-                <div class="card">
-                    <img src="placa1.jpg" class="card-img-top" alt="Placa 1">
-                    <div class="card-body">
-                        <h5 class="card-title">Placa 1</h5>
-                        <p class="card-text">Descrição da Placa 1</p>
-                        <i class="favorite-icon fas fa-heart"></i>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-4">
-                <div class="card">
-                    <img src="placa2.jpg" class="card-img-top" alt="Placa 2">
-                    <div class="card-body">
-                        <h5 class="card-title">Placa 2</h5>
-                        <p class="card-text">Descrição da Placa 2</p>
-                        <i class="favorite-icon fas fa-heart"></i>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-4">
-                <div class="card">
-                    <img src="placa3.jpg" class="card-img-top" alt="Placa 3">
-                    <div class="card-body">
-                        <h5 class="card-title">Placa 3</h5>
-                        <p class="card-text">Descrição da Placa 3</p>
-                        <i class="favorite-icon fas fa-heart"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <h1>Placas Favoritas</h1>
+        <?php
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $nome = $row['nome'];
+                $marca_nome = $row['marca_nome'];
+                $fabricante_nome = $row['fabricante_nome'];
+                $imagem = $row['imagem'];
+                $placa_id = $row['Id'];
+
+                echo '<div class="card">';
+                echo '<img src="data:image/jpeg;base64,' . base64_encode($imagem) . '" class="card-img-top img-fluid image-fit" alt="Imagem da Placa">';
+                echo '<div class="card-body">';
+                echo '<h5 class="card-title">' . $nome . '</h5>';
+                echo '<p class="card-text"><strong>Marca:</strong> ' . $marca_nome . '</p>';
+                echo '<p class="card-text"><strong>Fabricante:</strong> ' . $fabricante_nome . '</p>';
+
+                echo '<form method="POST">';
+                echo '<input type="hidden" name="placa_id" value="' . $placa_id . '">';
+                echo '<button type="submit" name="btnRemover" class="btn btn-danger">Remover dos Favoritos</button>';
+                echo '</form>';
+
+                echo '</div>';
+                echo '</div>';
+            }
+        } else {
+            echo 'Nenhuma placa favorita encontrada';
+        }
+        ?>
     </div>
 
+    <?php
+    if (isset($_POST['btnRemover'])) {
+        $placaId = $_POST['placa_id'];
+        $sqlRemover = "DELETE FROM favorito WHERE usuario_id = $usuarioId AND placa_id = $placaId";
+        $resultRemover = $conn->query($sqlRemover);
+
+        if ($resultRemover) {
+            echo "<script>alert('Placa removida dos favoritos com sucesso!');</script>";
+            echo "<script>window.location.href = 'favoritos.php';</script>";
+        } else {
+            echo "<script>alert('Erro ao remover placa dos favoritos: " . $conn->error . "');</script>";
+        }
+    }
+    ?>
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </body>
 

@@ -15,20 +15,13 @@ if (isset($_SESSION['usuario_logado'])) {
     exit();
 }
 
-$sql = "SELECT u.Id FROM usuario u WHERE u.nome like '$nomeUsuario'";
-$result_usuario = $conn->query($sql);
-
-if ($result_usuario->num_rows > 0) {
-    $row_usuario = $result_usuario->fetch_assoc();
-    $usuarioId = $row_usuario['Id'];
-    $sql = "SELECT p.*, m.nome AS marca_nome, f.nome AS fabricante_nome
-            FROM placa p
-            INNER JOIN avaliacao a ON p.id = a.placa_id
-            INNER JOIN marca m ON p.marca_id = m.id
-            INNER JOIN fabricante f ON p.fabricante_id = f.id
-            WHERE a.usuario_id = '$usuarioId'";
-    $result = $conn->query($sql);
-}
+$sql = "SELECT p.*, m.nome AS marca_nome, f.nome AS fabricante_nome
+        FROM placa p
+        INNER JOIN avaliacao a ON p.id = a.placa_id
+        INNER JOIN marca m ON p.marca_id = m.id
+        INNER JOIN fabricante f ON p.fabricante_id = f.id
+        WHERE a.usuario_id = (SELECT u.Id FROM usuario u WHERE u.nome like '$nomeUsuario')";
+$result = $conn->query($sql);
 ?>
 <!DOCTYPE html>
 <html>

@@ -70,48 +70,24 @@ if (isset($_POST['btnAvaliar'])&& $_POST['rating'] != '') {
     $estrelas = $_POST['rating'];
     $comentario = $_POST['comentario'];
 
-    // Busca código do usuário
-    $sql = "SELECT u.Id FROM usuario u WHERE u.nome like '$nomeUsuario'";
-    $result_usuario = $conn->query($sql);
+    // Executa a query de inserção
+    $query = "INSERT INTO avaliacao (usuario_Id, placa_Id, valor, comentario, data) VALUES ((SELECT u.Id FROM usuario u WHERE u.nome like '$nomeUsuario'), '$codigo_placa', '$estrelas', '$comentario', NOW())";
 
-    if ($result_usuario->num_rows > 0) {
-        $row_usuario = $result_usuario->fetch_assoc();
-        $id_usuario = $row_usuario['Id'];
+    $resultado = $conn->query($query);
 
-        // Executa a query de inserção
-        $query = "INSERT INTO avaliacao (usuario_Id, placa_Id, valor, comentario, data) VALUES ('$id_usuario', '$codigo_placa', '$estrelas', '$comentario', NOW())";
-
-        $resultado = $conn->query($query);
-
-        if ($resultado) {
-            header('Location: placa.php?codigo_placa=' . $codigo_placa);
-            exit();
-        }
-    }else {
-        echo 'Usuário não encontrado';
+    if ($resultado) {
+        header('Location: placa.php?codigo_placa=' . $codigo_placa);
         exit();
     }
 }
 if (isset($_POST['btnFavoritar'])) {
-    // Busca código do usuário
-    $sql = "SELECT u.Id FROM usuario u WHERE u.nome like '$nomeUsuario'";
-    $result_usuario = $conn->query($sql);
+    // Executa a query de inserção
+    $query = "INSERT INTO favorito (usuario_Id, placa_Id) VALUES ((SELECT u.Id FROM usuario u WHERE u.nome like '$nomeUsuario'), '$codigo_placa')";
 
-    if ($result_usuario->num_rows > 0) {
-        $row_usuario = $result_usuario->fetch_assoc();
-        $id_usuario = $row_usuario['Id'];
+    $resultado = $conn->query($query);
 
-        // Executa a query de inserção
-        $query = "INSERT INTO favorito (usuario_Id, placa_Id) VALUES ('$id_usuario', '$codigo_placa')";
-
-        $resultado = $conn->query($query);
-
-        if ($resultado) {
-            header('Location: placa.php?codigo_placa=' . $codigo_placa);
-            exit();
-        }
-    }else {
-        echo 'Usuário não encontrado';
+    if ($resultado) {
+        header('Location: placa.php?codigo_placa=' . $codigo_placa);
         exit();
     }
 }
@@ -294,7 +270,7 @@ if (isset($_POST['btnFavoritar'])) {
                         <span><?php echo $consumo; ?></span>
                     </div>
                 </div>
-            <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>"> 
+            <form method="post"> 
                 <button type="button" name="btnFavoritar" class="btn btn-primary favoritar-btn btn-centralizar">Favoritar</button>
             </form>
         </div>

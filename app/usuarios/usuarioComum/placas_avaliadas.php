@@ -15,13 +15,14 @@ if (isset($_SESSION['usuario_logado'])) {
     exit();
 }
 
-$sql = "SELECT p.*, m.nome AS marca_nome, f.nome AS fabricante_nome
+$sql = "SELECT DISTINCT p.*, m.nome AS marca_nome, f.nome AS fabricante_nome
         FROM placa p
         INNER JOIN avaliacao a ON p.id = a.placa_id
         INNER JOIN marca m ON p.marca_id = m.id
         INNER JOIN fabricante f ON p.fabricante_id = f.id
         WHERE a.usuario_id = (SELECT u.Id FROM usuario u WHERE u.nome like '$nomeUsuario')";
 $result = $conn->query($sql);
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -139,7 +140,7 @@ $result = $conn->query($sql);
 
 
                 // Exibir os comentários
-                $sql = "SELECT a.comentario, a.valor, a.data, u.nome AS nome_usuario
+                $sql = "SELECT a.Id AS id, a.comentario, a.valor, a.data, u.nome AS nome_usuario
                             FROM avaliacao a
                             INNER JOIN usuario u ON a.usuario_id = u.id
                             WHERE a.placa_id = $placa_id";
@@ -152,9 +153,10 @@ $result = $conn->query($sql);
                         $horario = date('d/m/Y H:i', strtotime($data));
                         $comentario = $avaliacaoRow['comentario'];
                         $estrelas = $avaliacaoRow['valor'];
+                        $id_avaliacao = $avaliacaoRow['id'];
                         echo '<li>' . $horario . "&nbsp;&nbsp;&nbsp;&nbsp;" . getRatingStars($estrelas) . "&nbsp;&nbsp;&nbsp;&nbsp;" . $comentario;
                         echo '<form method="POST">';
-                        echo '<input type="hidden" name="placa_id" value="' . $placa_id . '">';
+                        echo '<input type="hidden" name="id_avaliacao" value="'.$id_avaliacao.'">';
                         echo '<button type="submit" name="btnRemover" class="remove-button btn btn-danger">Remover Avaliação</button>';
                         echo '</form>';
                         echo '</li>';
@@ -171,9 +173,9 @@ $result = $conn->query($sql);
     </div>
 
     <?php
-    if (isset($_POST['btnRemover'])) {
-        $placaId = $_POST['placa_id'];
-        $sqlRemover = "DELETE FROM favorito WHERE usuario_id = $usuarioId AND placa_id = $placaId";
+    if (isset($_POST['btnRemover']) && $_POST['id_avaliacao'] != '') {
+        $id_avaliacao = $_POST['id_avaliacao'];
+        $sqlRemover = "DELETE FROM avaliacao WHERE a.Id= '$id_avaliacao'";
         $resultRemover = $conn->query($sqlRemover);
 
         if ($resultRemover) {

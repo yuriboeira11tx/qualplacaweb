@@ -143,7 +143,7 @@ $result = $conn->query($sql);
                 $sql = "SELECT a.Id AS id, a.comentario, a.valor, a.data, u.nome AS nome_usuario
                             FROM avaliacao a
                             INNER JOIN usuario u ON a.usuario_id = u.id
-                            WHERE a.placa_id = $placa_id
+                            WHERE a.placa_id = $placa_id AND a.usuario_id = (SELECT u.Id FROM usuario u WHERE u.nome like '$nomeUsuario')  
                             ORDER BY a.data";
                 $avaliacoes = $conn->query($sql);
 

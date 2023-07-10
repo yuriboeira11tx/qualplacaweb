@@ -15,17 +15,21 @@ if (isset($_SESSION['usuario_logado'])) {
     exit();
 }
 
-$usuarioId = explode(",", $_SESSION['usuario_logado'])[1];
-$sql = "SELECT p.*, a.valor, a.comentario, m.nome AS marca_nome, f.nome AS fabricante_nome
-        FROM placa p
-        INNER JOIN avaliacao a ON p.id = a.placa_id
-        INNER JOIN marca m ON p.marca_id = m.id
-        INNER JOIN fabricante f ON p.fabricante_id = f.id
-        WHERE a.usuario_id = $usuarioId";
-$result = $conn->query($sql);
+$sql = "SELECT u.Id FROM usuario u WHERE u.nome like '$nomeUsuario'";
+$result_usuario = $conn->query($sql);
 
+if ($result_usuario->num_rows > 0) {
+    $row_usuario = $result_usuario->fetch_assoc();
+    $usuarioId = $row_usuario['Id'];
+    $sql = "SELECT p.*, m.nome AS marca_nome, f.nome AS fabricante_nome
+            FROM placa p
+            INNER JOIN avaliacao a ON p.id = a.placa_id
+            INNER JOIN marca m ON p.marca_id = m.id
+            INNER JOIN fabricante f ON p.fabricante_id = f.id
+            WHERE a.usuario_id = '$usuarioId'";
+    $result = $conn->query($sql);
+}
 ?>
-
 <!DOCTYPE html>
 <html>
 
@@ -33,16 +37,17 @@ $result = $conn->query($sql);
     <title>Placas Avaliadas</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <style>
-        body {
-            padding-top: 60px;
-        }
-
         .container {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
             gap: 20px;
-            padding-top: 120px;
+            padding-top: 50px;
+        }
+
+        .card {
+            margin-bottom: 20px;
+            width: 500px;
         }
 
         .card-img-top {
@@ -50,28 +55,42 @@ $result = $conn->query($sql);
             object-fit: cover;
         }
 
-        .rating {
-            unicode-bidi: bidi-override;
-            direction: rtl;
-            text-align: center;
+        .card-img {
+            justify-content: center;
+            height: 200px;
+            object-fit: cover;
+            width: 300px; 
+            margin-left: 20%;
+            margin-top: 30px;
         }
 
-        .rating>span {
-            display: inline-block;
-            position: relative;
-            width: 1.1em;
-            font-size: 1.5em;
-            color: #FFD700;
-        }
-
-        .rating>span:before {
-            content: "\2605";
+        .favorite-icon {
             position: absolute;
+            top: 10px;
+            right: 10px;
+            color: red;
+            font-size: 24px;
         }
 
-        .rating>span:not(:last-child) {
-            margin-right: 0.2em;
+        .centered-title {
+            display: flex;
+            justify-content: center;
+            padding-top: 140px;
         }
+
+        .remove-button {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        .comentarios-list{
+            font-size: 15px;
+            list-style-type: none;
+            padding-left: 0;
+        }
+
     </style>
 </head>
 
@@ -92,92 +111,87 @@ $result = $conn->query($sql);
             </ul>
         </div>
     </nav>
-
-    <div class="container">
+    <div class="centered-title">
         <h1>Placas Avaliadas</h1>
-
+    </div>
+    <div class="container">
         <?php
+        function getRatingStars($rating) {
+            $stars = '';
+        
+            for ($i = 1; $i <= 5; $i++) {
+                if ($i <= $rating) {
+                    $stars .= '<label for="star' . $i . '">&#9733;</label>';
+                } else {
+                    $stars .= '<label for="star' . $i . '">&#9734;</label>';
+                }
+            }
+        
+            return $stars;
+        }
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
-                $placaId = $row['Id'];
                 $nome = $row['nome'];
-                $marcaNome = $row['marca_nome'];
-                $fabricanteNome = $row['fabricante_nome'];
-                $valor = $row['valor'];
-                $comentario = $row['comentario'];
+                $marca_nome = $row['marca_nome'];
+                $fabricante_nome = $row['fabricante_nome'];
                 $imagem = $row['imagem'];
-                $vram = $row['vram'];
-                $clock = $row['clock'];
-                $consumo = $row['consumo'];
-                $preco = $row['preco'];
-
-                $utilidades = [];
-                $utilidadesQuery = "SELECT u.nome FROM utilidade u INNER JOIN placa_utilidade pu ON u.id = pu.utilidade_id WHERE pu.placa_id = $placaId";
-                $utilidadesResult = $conn->query($utilidadesQuery);
-                if ($utilidadesResult->num_rows > 0) {
-                    while ($utilidadeRow = $utilidadesResult->fetch_assoc()) {
-                        $utilidades[] = $utilidadeRow['nome'];
-                    }
-                }
+                $placa_id = $row['Id'];
 
                 echo '<div class="card">';
-                echo '<img src="data:image/jpeg;base64,' . base64_encode($imagem) . '" class="card-img-top img-fluid image-fit" alt="Imagem da Placa">';
-                echo '<div class="card-body">';
+                echo '<img src="data:image/jpeg;base64,' . base64_encode($imagem) . '" class="card-img img-fluid image-fit" alt="Imagem da Placa">';
+                echo '<div class="card-body justify-content-end">'; // Adicione a classe justify-content-end aqui
                 echo '<h5 class="card-title">' . $nome . '</h5>';
-                echo '<p class="card-text"><strong>Marca:</strong> ' . $marcaNome . '</p>';
-                echo '<p class="card-text"><strong>Utilidades:</strong> ' . implode(", ", $utilidades) . '</p>';
-                echo '<p class="card-text"><strong>VRAM:</strong> ' . $vram . '</p>';
-                echo '<p class="card-text"><strong>Clock:</strong> ' . $clock . '</p>';
-                echo '<p class="card-text"><strong>Fabricante:</strong> ' . $fabricanteNome . '</p>';
-                echo '<p class="card-text"><strong>Comentário:</strong> ' . $comentario . '</p>';
-                echo '<p class="card-text text-success"><strong>Preço: R$</strong> ' . $preco . '</p>';
+                echo '<p class="card-text"><strong>Marca:</strong> ' . $marca_nome . '</p>';
+                echo '<p class="card-text"><strong>Fabricante:</strong> ' . $fabricante_nome . '</p>';
 
-                echo '<div class="rating">';
-                for ($i = 1; $i <= 5; $i++) {
-                    if ($i <= round($valor)) {
-                        echo '<span>&#9733;</span>'; // Estrela preenchida
+
+                // Exibir os comentários
+                $sql = "SELECT a.comentario, a.valor, a.data, u.nome AS nome_usuario
+                            FROM avaliacao a
+                            INNER JOIN usuario u ON a.usuario_id = u.id
+                            WHERE a.placa_id = $placa_id";
+                $avaliacoes = $conn->query($sql);
+
+                if ($avaliacoes->num_rows > 0) {
+                    echo '<ul class="comentarios-list">';
+                    while ($avaliacaoRow = $avaliacoes->fetch_assoc()) {
+                        $data = $avaliacaoRow['data'];
+                        $horario = date('d/m/Y H:i', strtotime($data));
+                        $comentario = $avaliacaoRow['comentario'];
+                        $estrelas = $avaliacaoRow['valor'];
+                        echo '<li>' . $horario . "&nbsp;&nbsp;&nbsp;&nbsp;" . getRatingStars($estrelas) . "&nbsp;&nbsp;&nbsp;&nbsp;" . $comentario;
+                        echo '<form method="POST">';
+                        echo '<input type="hidden" name="placa_id" value="' . $placa_id . '">';
+                        echo '<button type="submit" name="btnRemover" class="remove-button btn btn-danger">Remover Avaliação</button>';
+                        echo '</form>';
+                        echo '</li>';
                     }
+                    echo '</ul>';
+                } else {
+                    echo '<p class="card-text">Nenhum comentário</p>';
                 }
-                echo '</div>';
-
-                echo '<form method="POST">';
-                echo '<input type="hidden" name="placa_id" value="' . $placaId . '">';
-                echo '<button type="submit" name="btnRemover" class="btn btn-danger">Remover Avaliação</button>';
-                echo '</form>';
-
-                echo '</div>';
-                echo '</div>';
-            }
-        } else {
-            echo 'Nenhuma placa avaliada encontrada.';
-        }
+                    }
+                } else {
+                    echo "<br>Nenhuma placa avaliada encontrada<br>";
+                }
         ?>
-
     </div>
 
     <?php
     if (isset($_POST['btnRemover'])) {
         $placaId = $_POST['placa_id'];
+        $sqlRemover = "DELETE FROM favorito WHERE usuario_id = $usuarioId AND placa_id = $placaId";
+        $resultRemover = $conn->query($sqlRemover);
 
-        $stmt = $conn->prepare("DELETE FROM avaliacao WHERE usuario_id = ? AND placa_id = ?");
-        $stmt->bind_param("ii", $usuarioId, $placaId);
-        $stmt->execute();
-
-        if ($stmt->affected_rows > 0) {
+        if ($resultRemover) {
             echo "<script>alert('Avaliação removida com sucesso!');</script>";
             echo "<script>window.location.href = 'placas_avaliadas.php';</script>";
-            exit();
         } else {
-            echo "<script>alert('Erro ao remover a avaliação.');</script>";
+            echo "<script>alert('Erro ao remover avaliação: " . $conn->error . "');</script>";
         }
-
-        $stmt->close();
     }
     ?>
-
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </body>
 
 </html>

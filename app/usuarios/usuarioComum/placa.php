@@ -261,40 +261,42 @@ if (isset($_POST['btnFavoritar'])) {
     </nav>
 
     <div class="container">
-        <div class="placa-card">
-            <div class="placa-image">
-                <img src="data:image/jpeg;base64,<?php echo base64_encode($imagem); ?>" class="card-img-top" alt="Imagem da Placa">
-            </div>
-            <div class="placa-info">
-                <div class="text-center">
-                    <h3 class="card-title"><?php echo $nome; ?></h3>
+        <div class="placa-card">       
+                <div class="placa-image">
+                    <img src="data:image/jpeg;base64,<?php echo base64_encode($imagem); ?>" class="card-img-top" alt="Imagem da Placa">
                 </div>
-                <div class="campo">
-                    <label>Marca:</label>
-                    <span><?php echo $marca_nome; ?></span>
+                <div class="placa-info">
+                    <div class="text-center">
+                        <h3 class="card-title"><?php echo $nome; ?></h3>
+                    </div>
+                    <div class="campo">
+                        <label>Marca:</label>
+                        <span><?php echo $marca_nome; ?></span>
+                    </div>
+                    <div class="campo">
+                        <label>Fabricante:</label>
+                        <span><?php echo $fabricante_nome; ?></span>
+                    </div>
+                    <div class="campo">
+                        <label>Utilidades:</label>
+                        <span><?php echo $utilidades_nome; ?></span>
+                    </div>
+                    <div class="campo">
+                        <label>VRAM:</label>
+                        <span><?php echo $vram; ?></span>
+                    </div>
+                    <div class="campo">
+                        <label>Clock:</label>
+                        <span><?php echo $clock; ?></span>
+                    </div>
+                    <div class="campo">
+                        <label>Consumo:</label>
+                        <span><?php echo $consumo; ?></span>
+                    </div>
                 </div>
-                <div class="campo">
-                    <label>Fabricante:</label>
-                    <span><?php echo $fabricante_nome; ?></span>
-                </div>
-                <div class="campo">
-                    <label>Utilidades:</label>
-                    <span><?php echo $utilidades_nome; ?></span>
-                </div>
-                <div class="campo">
-                    <label>VRAM:</label>
-                    <span><?php echo $vram; ?></span>
-                </div>
-                <div class="campo">
-                    <label>Clock:</label>
-                    <span><?php echo $clock; ?></span>
-                </div>
-                <div class="campo">
-                    <label>Consumo:</label>
-                    <span><?php echo $consumo; ?></span>
-                </div>
-            </div>
-            <button type="button" name="btnFavoritar" class="btn btn-primary favoritar-btn btn-centralizar">Favoritar</button>
+            <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>"> 
+                <button type="button" name="btnFavoritar" class="btn btn-primary favoritar-btn btn-centralizar">Favoritar</button>
+            </form>
         </div>
 
         <div class="placa-card">

@@ -15,14 +15,20 @@ if (isset($_SESSION['usuario_logado'])) {
     exit();
 }
 
-$usuarioId = explode(",", $_SESSION['usuario_logado'])[1];
-$sql = "SELECT p.*, m.nome AS marca_nome, f.nome AS fabricante_nome
-        FROM placa p
-        INNER JOIN marca m ON p.marca_id = m.id
-        INNER JOIN fabricante f ON p.fabricante_id = f.id
-        INNER JOIN favorito fa ON p.id = fa.placa_id
-        WHERE fa.usuario_id = $usuarioId";
-$result = $conn->query($sql);
+$sql = "SELECT u.Id FROM usuario u WHERE u.nome like '$nomeUsuario'";
+$result_usuario = $conn->query($sql);
+
+if ($result_usuario->num_rows > 0) {
+    $row_usuario = $result_usuario->fetch_assoc();
+    $usuarioId = $row_usuario['Id'];
+    $sql = "SELECT p.*, m.nome AS marca_nome, f.nome AS fabricante_nome
+            FROM placa p
+            INNER JOIN marca m ON p.marca_id = m.id
+            INNER JOIN fabricante f ON p.fabricante_id = f.id
+            INNER JOIN favorito fa ON p.id = fa.placa_id
+            WHERE fa.usuario_id = $usuarioId";
+    $result = $conn->query($sql);
+}
 ?>
 <!DOCTYPE html>
 <html>
@@ -36,7 +42,7 @@ $result = $conn->query($sql);
             flex-wrap: wrap;
             justify-content: center;
             gap: 20px;
-            padding-top: 120px;
+            padding-top: 50px;
         }
 
         .card {
@@ -55,6 +61,12 @@ $result = $conn->query($sql);
             right: 10px;
             color: red;
             font-size: 24px;
+        }
+
+        .centered-title {
+            display: flex;
+            justify-content: center;
+            padding-top: 140px;
         }
     </style>
 </head>
@@ -76,9 +88,10 @@ $result = $conn->query($sql);
             </ul>
         </div>
     </nav>
-
-    <div class="container">
+    <div class="centered-title">
         <h1>Placas Favoritas</h1>
+    </div>
+    <div class="container">
         <?php
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
@@ -104,7 +117,7 @@ $result = $conn->query($sql);
                 echo '</div>';
             }
         } else {
-            echo 'Nenhuma placa favorita encontrada';
+            echo '<br>Nenhuma placa favorita encontrada<br>';
         }
         ?>
     </div>

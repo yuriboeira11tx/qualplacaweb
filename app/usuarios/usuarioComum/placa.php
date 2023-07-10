@@ -47,7 +47,8 @@ if (isset($_GET['codigo_placa'])) {
         $sql_2 = "SELECT a.*, u.nome AS nome_usuario
                     FROM avaliacao a
                     INNER JOIN usuario u ON a.usuario_Id = u.Id
-                    WHERE a.placa_Id = '$codigo_placa'";
+                    WHERE a.placa_Id = '$codigo_placa'
+                    ORDER BY a.data";
 
         $result_2 = $conn->query($sql_2);
         $avaliacoes = [];
@@ -263,15 +264,15 @@ if (isset($_POST['btnAvaliar']) && $_POST['rating'] != '') {
                     </div>
                     <div class="campo">
                         <label>VRAM:</label>
-                        <span><?php echo $vram; ?></span>
+                        <span><?php echo $vram." GBs"; ?></span>
                     </div>
                     <div class="campo">
                         <label>Clock:</label>
-                        <span><?php echo $clock; ?></span>
+                        <span><?php echo $clock." MHz"; ?></span>
                     </div>
                     <div class="campo">
                         <label>Consumo:</label>
-                        <span><?php echo $consumo; ?></span>
+                        <span><?php echo $consumo." Wats"; ?></span>
                     </div>
                 </div>
                 <form method='post'>

@@ -22,6 +22,8 @@ if (isset($_POST['btnBusca'])) {
     $memoria = $_POST['memoria'];
     $clock = $_POST['clock'];
     $consumo = $_POST['consumo'];
+    $estrelas = $_POST['rating'];
+    
     $utilidades = array();
 
     if (isset($_POST['streaming'])) {
@@ -39,8 +41,6 @@ if (isset($_POST['btnBusca'])) {
     if (isset($_POST['jogos'])) {
         $utilidades[] = $_POST['jogos'];
     }
-    $consumo = $_POST['consumo'];
-    $estrelas = $_POST['rating'];
 
     $sql = "SELECT p.*, m.nome AS marca_nome, f.nome AS fabricante_nome, GROUP_CONCAT(u.nome SEPARATOR ', ') AS utilidades_nome";
 
@@ -58,8 +58,12 @@ if (isset($_POST['btnBusca'])) {
                 INNER JOIN utilidade u ON pu.utilidade_Id = u.Id
                 WHERE 1=1"; // Cláusula WHERE inicial para permitir a adição de condições dinamicamente
 
+    if (!empty($precoMaximo)) {
+        $sql .= " AND p.preco <= '$precoMaximo'";
+    }    
+
     if (!empty($marca)) {
-        $sql .= " AND m.nome = '$marca'";
+        $sql .= " AND m.Id = '$marca'";
     }
 
     if (!empty($fabricante)) {
@@ -67,11 +71,11 @@ if (isset($_POST['btnBusca'])) {
     }
 
     if (!empty($memoria)) {
-        $sql .= " AND p.vram <= '$memoria'";
+        $sql .= " AND p.vram >= '$memoria'";
     }
 
     if (!empty($clock)) {
-        $sql .= " AND p.clock <= '$clock'";
+        $sql .= " AND p.clock >= '$clock'";
     }
 
     if (!empty($utilidades)) {

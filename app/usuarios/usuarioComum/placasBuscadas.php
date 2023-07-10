@@ -23,10 +23,10 @@ if (isset($_SESSION['usuario_logado'])) {
     <title>PlacasBuscadas</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <style>
-        .container {
-            padding-top: 120px;
-        }
 
+        .container {
+            padding-top: 40px;
+        }
         .placas-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -86,6 +86,11 @@ if (isset($_SESSION['usuario_logado'])) {
             font-size: 14px;
             padding: 5px 10px;
         }
+
+        .card-titlee {
+            padding-top: 120px;
+            text-align: center;
+        }
     </style>
 </head>
 
@@ -109,9 +114,11 @@ if (isset($_SESSION['usuario_logado'])) {
             </ul>
         </div>
     </nav>
+    <div class="card-titlee">
+        <h2>Essas são as placas disponíveis conforme o filtro solicitado:</h2>
+    </div>
 
     <div class="container">
-        <h2>Essas são as placas disponíveis conforme o filtro solicitado:</h2>
         <div class="placas-grid">
             <?php
             $sql = unserialize($_GET['sql']);

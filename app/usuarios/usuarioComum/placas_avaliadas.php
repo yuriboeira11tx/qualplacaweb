@@ -143,7 +143,8 @@ $result = $conn->query($sql);
                 $sql = "SELECT a.Id AS id, a.comentario, a.valor, a.data, u.nome AS nome_usuario
                             FROM avaliacao a
                             INNER JOIN usuario u ON a.usuario_id = u.id
-                            WHERE a.placa_id = $placa_id";
+                            WHERE a.placa_id = $placa_id
+                            ORDER BY a.data";
                 $avaliacoes = $conn->query($sql);
 
                 if ($avaliacoes->num_rows > 0) {
@@ -162,13 +163,17 @@ $result = $conn->query($sql);
                         echo '</li>';
                     }
                     echo '</ul>';
+                    
                 } else {
                     echo '<p class="card-text">Nenhum comentário</p>';
                 }
-                    }
-                } else {
-                    echo "<br>Nenhuma placa avaliada encontrada<br>";
+                echo '</div>';
+                echo '</div>';
                 }
+                
+            } else {
+                echo "<br>Nenhuma placa avaliada encontrada<br>";
+            }
         ?>
     </div>
 
